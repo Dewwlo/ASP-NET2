@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
-using HäggesPizzeria.Models.Dish;
+using HäggesPizzeria.Models;
 
 namespace HäggesPizzeria.Controllers
 {
@@ -34,6 +34,8 @@ namespace HäggesPizzeria.Controllers
             }
 
             var dish = await _context.Dishes
+                .Include(d => d.DishIngredients)
+                .ThenInclude(di => di.Ingredient)
                 .SingleOrDefaultAsync(m => m.DishId == id);
             if (dish == null)
             {

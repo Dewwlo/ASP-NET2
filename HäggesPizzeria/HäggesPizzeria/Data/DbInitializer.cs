@@ -1,10 +1,7 @@
 ﻿using HäggesPizzeria.Models;
-using HäggesPizzeria.Models.Dish;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace HäggesPizzeria.Data
 {
@@ -32,10 +29,29 @@ namespace HäggesPizzeria.Data
 
             if (context.Dishes.ToList().Count == 0)
             {
+                var cheese = new Ingredient { Name = "Cheese" };
+                var tomatoe = new Ingredient { Name = "Tomatoe" };
+                var ham = new Ingredient { Name = "Ham" };
+
                 var capricciosa = new Dish { Name = "Capricciosa" };
-                var margaritha = new Dish { Name = "Margaritha" };
-                var hawaii = new Dish { Name = "Hawaii" };
-                context.AddRange(capricciosa, margaritha, hawaii);
+                //var margaritha = new Dish { Name = "Margaritha" };
+                //var hawaii = new Dish { Name = "Hawaii" };
+
+                context.AddRange(tomatoe, cheese, ham);
+                //context.AddRange(capricciosa, margaritha, hawaii);
+                context.AddRange(capricciosa);
+
+                var capricciosaCheese = new DishIngredient { Dish = capricciosa, Ingredient = cheese };
+                var capricciosaTomatoe = new DishIngredient { Dish = capricciosa, Ingredient = tomatoe };
+                var capricciosaHam = new DishIngredient { Dish = capricciosa, Ingredient = ham };
+
+                capricciosa.DishIngredients = new List<DishIngredient>();
+                //margaritha.DishIngredients = new List<DishIngredient>();
+                //hawaii.DishIngredients = new List<DishIngredient>();
+                capricciosa.DishIngredients.Add(capricciosaCheese);
+                capricciosa.DishIngredients.Add(capricciosaHam);
+                capricciosa.DishIngredients.Add(capricciosaTomatoe);
+                
                 context.SaveChanges();
             }
         }
