@@ -1,4 +1,4 @@
-﻿@model HäggesPizzeria.Models.Dish
+﻿@model HäggesPizzeria.Models.BaseDish
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,21 +12,21 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            Name:
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Model.Name
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Price)
+            Price:
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Price)
+            @Model.Price
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="DishId" />
+        <input type="hidden" asp-for="BaseDishId" />
         <input type="submit" value="Delete" class="btn btn-default" /> |
         <a asp-action="Index">Back to List</a>
     </form>
