@@ -2,11 +2,11 @@
 
 namespace HäggesPizzeria.Models
 {
-    public class Dish
+    public class BaseDish
     {
-        public int DishId { get; set; }
+        public int BaseDishId { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
-        public List<DishIngredient> DishIngredients { get; set; }
+        public ICollection<BaseDishIngredient> BaseDishIngredients { get; set; }
     }
 }
