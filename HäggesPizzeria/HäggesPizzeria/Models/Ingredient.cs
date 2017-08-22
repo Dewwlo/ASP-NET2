@@ -6,6 +6,8 @@ namespace HäggesPizzeria.Models
     {
         public int IngredientId { get; set; }
         public string Name { get; set; }
-        public List<DishIngredient> DishIngredients { get; set; }
+        public int AddExtraPrice { get; set; }
+        public ICollection<BaseDishIngredient> BaseDishIngredients { get; set; }
+        public ICollection<OrderedDishIngredient> OrderedDishIngredients { get; set; }
     }
 }

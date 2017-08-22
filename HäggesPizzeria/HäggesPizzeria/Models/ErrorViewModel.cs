@@ -1,5 +1,3 @@
-using System;
-
 namespace HäggesPizzeria.Models
 {
     public class ErrorViewModel

@@ -33,7 +33,7 @@ namespace HäggesPizzeria.Data
                 var tomatoe = new Ingredient { Name = "Tomatoe" };
                 var ham = new Ingredient { Name = "Ham" };
 
-                var capricciosa = new Dish { Name = "Capricciosa" };
+                var capricciosa = new BaseDish { Name = "Capricciosa" };
                 //var margaritha = new Dish { Name = "Margaritha" };
                 //var hawaii = new Dish { Name = "Hawaii" };
 
@@ -41,16 +41,16 @@ namespace HäggesPizzeria.Data
                 //context.AddRange(capricciosa, margaritha, hawaii);
                 context.AddRange(capricciosa);
 
-                var capricciosaCheese = new DishIngredient { Dish = capricciosa, Ingredient = cheese };
-                var capricciosaTomatoe = new DishIngredient { Dish = capricciosa, Ingredient = tomatoe };
-                var capricciosaHam = new DishIngredient { Dish = capricciosa, Ingredient = ham };
+                var capricciosaCheese = new BaseDishIngredient { Dish = capricciosa, Ingredient = cheese };
+                var capricciosaTomatoe = new BaseDishIngredient { Dish = capricciosa, Ingredient = tomatoe };
+                var capricciosaHam = new BaseDishIngredient { Dish = capricciosa, Ingredient = ham };
 
-                capricciosa.DishIngredients = new List<DishIngredient>();
+                capricciosa.BaseDishIngredients = new List<BaseDishIngredient>();
                 //margaritha.DishIngredients = new List<DishIngredient>();
                 //hawaii.DishIngredients = new List<DishIngredient>();
-                capricciosa.DishIngredients.Add(capricciosaCheese);
-                capricciosa.DishIngredients.Add(capricciosaHam);
-                capricciosa.DishIngredients.Add(capricciosaTomatoe);
+                capricciosa.BaseDishIngredients.Add(capricciosaCheese);
+                capricciosa.BaseDishIngredients.Add(capricciosaHam);
+                capricciosa.BaseDishIngredients.Add(capricciosaTomatoe);
                 
                 context.SaveChanges();
             }

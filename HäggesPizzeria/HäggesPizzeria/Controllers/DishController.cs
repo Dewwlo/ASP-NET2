@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
@@ -34,9 +31,9 @@ namespace HäggesPizzeria.Controllers
             }
 
             var dish = await _context.Dishes
-                .Include(d => d.DishIngredients)
+                .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
-                .SingleOrDefaultAsync(m => m.DishId == id);
+                .SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -56,7 +53,7 @@ namespace HäggesPizzeria.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Price")] Dish dish)
+        public async Task<IActionResult> Create([Bind("DishId,Name,Price")] BaseDish dish)
         {
             if (ModelState.IsValid)
             {
@@ -75,7 +72,7 @@ namespace HäggesPizzeria.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.DishId == id);
+            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -88,9 +85,9 @@ namespace HäggesPizzeria.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Price")] Dish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Price")] BaseDish dish)
         {
-            if (id != dish.DishId)
+            if (id != dish.BaseDishId)
             {
                 return NotFound();
             }
@@ -104,7 +101,7 @@ namespace HäggesPizzeria.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DishExists(dish.DishId))
+                    if (!DishExists(dish.BaseDishId))
                     {
                         return NotFound();
                     }
@@ -127,7 +124,7 @@ namespace HäggesPizzeria.Controllers
             }
 
             var dish = await _context.Dishes
-                .SingleOrDefaultAsync(m => m.DishId == id);
+                .SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -141,7 +138,7 @@ namespace HäggesPizzeria.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.DishId == id);
+            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
             _context.Dishes.Remove(dish);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -149,7 +146,7 @@ namespace HäggesPizzeria.Controllers
 
         private bool DishExists(int id)
         {
-            return _context.Dishes.Any(e => e.DishId == id);
+            return _context.Dishes.Any(e => e.BaseDishId == id);
         }
     }
 }
