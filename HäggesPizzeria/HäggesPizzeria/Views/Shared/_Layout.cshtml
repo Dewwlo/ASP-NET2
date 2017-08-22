@@ -21,7 +21,10 @@
         <div class="container">
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Dish" asp-action="Index">Dishes</a></li>
+                    @if(User.IsInRole("Admin"))
+                    {
+                        <li><a asp-area="" asp-controller="BaseDish" asp-action="Index">Manage dishes</a></li>
+                    }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

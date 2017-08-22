@@ -7,11 +7,11 @@ using HäggesPizzeria.Models;
 
 namespace HäggesPizzeria.Controllers
 {
-    public class DishController : Controller
+    public class BaseDishController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DishController(ApplicationDbContext context)
+        public BaseDishController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -19,7 +19,7 @@ namespace HäggesPizzeria.Controllers
         // GET: Dish
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dishes.ToListAsync());
+            return View(await _context.BaseDishes.ToListAsync());
         }
 
         // GET: Dish/Details/5
@@ -30,7 +30,7 @@ namespace HäggesPizzeria.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.Dishes
+            var dish = await _context.BaseDishes
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
                 .SingleOrDefaultAsync(m => m.BaseDishId == id);
@@ -72,7 +72,7 @@ namespace HäggesPizzeria.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
+            var dish = await _context.BaseDishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace HäggesPizzeria.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Price")] BaseDish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("BaseDishId,Name,Price")] BaseDish dish)
         {
             if (id != dish.BaseDishId)
             {
@@ -123,7 +123,7 @@ namespace HäggesPizzeria.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.Dishes
+            var dish = await _context.BaseDishes
                 .SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
@@ -138,15 +138,15 @@ namespace HäggesPizzeria.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dish = await _context.Dishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
-            _context.Dishes.Remove(dish);
+            var dish = await _context.BaseDishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
+            _context.BaseDishes.Remove(dish);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DishExists(int id)
         {
-            return _context.Dishes.Any(e => e.BaseDishId == id);
+            return _context.BaseDishes.Any(e => e.BaseDishId == id);
         }
     }
 }

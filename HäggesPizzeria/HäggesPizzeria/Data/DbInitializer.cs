@@ -13,15 +13,16 @@ namespace HäggesPizzeria.Data
             RoleManager<IdentityRole> roleManager)
         {
             var aUser = new ApplicationUser {UserName = "kund@test.com", Email = "kund@test.com"};
-            var userResult = userManager.CreateAsync(aUser, "PassWord1$");
+            var userResult = userManager.CreateAsync(aUser, "pass");
 
             var adminRole = new IdentityRole { Name = "Admin" };
             var roleResult = roleManager.CreateAsync(adminRole).Result;
 
             var adminUser = new ApplicationUser {UserName = "admin@test.com", Email = "admin@test.com"};
-            var adminUserResult = userManager.CreateAsync(adminUser, "Password1$").Result;
+            var adminUserResult = userManager.CreateAsync(adminUser, "pass").Result;
+            var adminRoleResult = userManager.AddToRoleAsync(adminUser, "Admin");
 
-            if (context.Dishes.ToList().Count == 0)
+            if (context.BaseDishes.ToList().Count == 0)
             {
                 var cheese = new Ingredient {Name = "Cheese", AddExtraPrice = 5};
                 var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5};
@@ -29,9 +30,9 @@ namespace HäggesPizzeria.Data
                 var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10};
                 var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10};
 
-                var capricciosa = new BaseDish {Name = "Capricciosa"};
-                var margaritha = new BaseDish {Name = "Margaritha"};
-                var hawaii = new BaseDish {Name = "Hawaii"};
+                var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100};
+                var margaritha = new BaseDish {Name = "Margaritha", Price = 90};
+                var hawaii = new BaseDish {Name = "Hawaii", Price = 100};
 
                 var order1 = new Order {TotalPrice = 200, User = aUser};
                 var order2 = new Order {TotalPrice = 100};
@@ -104,7 +105,6 @@ namespace HäggesPizzeria.Data
 
                 context.SaveChanges();
             }
-            var adminRoleResult = userManager.AddToRoleAsync(adminUser, "Admin");
         }
     }
 }
