@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace HäggesPizzeria.Services
 {
@@ -16,9 +14,9 @@ namespace HäggesPizzeria.Services
             _context = context;
         }
 
-        public ICollection<Ingredient> GetAllActiveIngredients()
+        public ICollection<Ingredient> GetAllActiveIngredients(ICollection<BaseDishIngredient> usedIngredients)
         {
-            return _context.Ingredients.ToList();
+            return _context.Ingredients.Where(i => usedIngredients.All(ui => ui.IngredientId != i.IngredientId) && i.IsActive).ToList();
         }
     }
 }

@@ -72,7 +72,10 @@ namespace HäggesPizzeria.Controllers
                 return NotFound();
             }
 
-            var dish = await _context.BaseDishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
+            var dish = await _context.BaseDishes
+                .Include(d => d.BaseDishIngredients)
+                .ThenInclude(d => d.Ingredient)
+                .SingleOrDefaultAsync(m => m.BaseDishId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -147,6 +150,17 @@ namespace HäggesPizzeria.Controllers
         private bool DishExists(int id)
         {
             return _context.BaseDishes.Any(e => e.BaseDishId == id);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateBaseDishIngredient(int dishId, int ingredientId, bool addIngredient)
+        {
+            var result = addIngredient ?
+                _context.BaseDishIngredients.Add(new BaseDishIngredient() { BaseDishId = dishId, IngredientId = ingredientId}) :
+                _context.BaseDishIngredients.Remove(new BaseDishIngredient() {BaseDishId = dishId, IngredientId = ingredientId});
+            _context.SaveChanges();
+            var cap = _context.BaseDishes.Where(d => d.BaseDishId == 1);
+            return null;
         }
     }
 }

@@ -24,11 +24,11 @@ namespace HäggesPizzeria.Data
 
             if (context.BaseDishes.ToList().Count == 0)
             {
-                var cheese = new Ingredient {Name = "Cheese", AddExtraPrice = 5};
-                var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5};
-                var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10};
-                var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10};
-                var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10};
+                var cheese = new Ingredient {Name = "Cheese", AddExtraPrice = 5, IsActive = true};
+                var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5, IsActive = true };
+                var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10, IsActive = true };
+                var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10, IsActive = true };
+                var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true };
 
                 var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true};
                 var margaritha = new BaseDish {Name = "Margaritha", Price = 90, IsActive = true};
