@@ -152,15 +152,17 @@ namespace HäggesPizzeria.Controllers
             return _context.BaseDishes.Any(e => e.BaseDishId == id);
         }
 
-        [HttpPost]
         public ActionResult UpdateBaseDishIngredient(int dishId, int ingredientId, bool addIngredient)
         {
             var result = addIngredient ?
                 _context.BaseDishIngredients.Add(new BaseDishIngredient() { BaseDishId = dishId, IngredientId = ingredientId}) :
                 _context.BaseDishIngredients.Remove(new BaseDishIngredient() {BaseDishId = dishId, IngredientId = ingredientId});
             _context.SaveChanges();
-            var cap = _context.BaseDishes.Where(d => d.BaseDishId == 1);
-            return null;
+
+            return PartialView("_IngredientPartial", _context.BaseDishes
+                    .Include(d => d.BaseDishIngredients)
+                    .ThenInclude(di => di.Ingredient)
+                    .SingleOrDefault(d => d.BaseDishId == dishId));
         }
     }
 }

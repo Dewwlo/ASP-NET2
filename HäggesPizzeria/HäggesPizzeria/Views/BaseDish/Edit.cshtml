@@ -1,7 +1,5 @@
-﻿@using HäggesPizzeria.Services
-@using Microsoft.AspNetCore.Mvc.Rendering
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
 @model HäggesPizzeria.Models.BaseDish
-@inject IngredientService IngredientService
 
 @{
     ViewData["Title"] = "Edit";
@@ -30,22 +28,9 @@
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-default" />
         </div>
-        <div class="col-md-6">
-            @foreach (var ingredient in Model.BaseDishIngredients)
-            {
-                <div class="col-lg-12">
-                    <p class="col-md-6">@ingredient.Ingredient.Name</p>
-                    <button class="col-md-6" onclick="updateIngredient(@Model.BaseDishId, @ingredient.IngredientId, 'false')">Remove</button>
-                </div>
-            }
-        </div>
-        <div class="col-md-6">
-            @foreach (var ingredient in IngredientService.GetAllActiveIngredients(Model.BaseDishIngredients))
-            {
-                <div class="col-lg-12">
-                    <p class="col-sm-6">@ingredient.Name</p>
-                    <button class="col-sm-6" onclick="updateIngredient('@Model.BaseDishId', '@ingredient.IngredientId', 'true')">Add</button>
-                </div>
+        <div id="base-dish-ingredients">
+            @{
+                Html.RenderPartial("_IngredientPartial", Model);
             }
         </div>
     </div>
