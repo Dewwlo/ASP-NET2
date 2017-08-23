@@ -51,6 +51,13 @@ namespace HäggesPizzeria
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.CookieHttpOnly = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +83,7 @@ namespace HäggesPizzeria
 
             app.UseAuthentication();
 
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

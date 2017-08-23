@@ -30,18 +30,18 @@ namespace HäggesPizzeria.Data
                 var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10};
                 var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10};
 
-                var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100};
-                var margaritha = new BaseDish {Name = "Margaritha", Price = 90};
-                var hawaii = new BaseDish {Name = "Hawaii", Price = 100};
+                var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true};
+                var margaritha = new BaseDish {Name = "Margaritha", Price = 90, IsActive = true};
+                var hawaii = new BaseDish {Name = "Hawaii", Price = 100, IsActive = true};
 
                 var order1 = new Order {TotalPrice = 200, User = aUser};
                 var order2 = new Order {TotalPrice = 100};
 
                 var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100};
                 var orderedDish1Cheese = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = cheese};
-                var orderedDish1Tomatoe = new OrderedDishIngredient { OrderedDish = orderedDish1, Ingredient = tomatoe };
-                var orderedDish1Ham = new OrderedDishIngredient { OrderedDish = orderedDish1, Ingredient = ham };
-                var orderedDish1Mushroom = new OrderedDishIngredient { OrderedDish = orderedDish1, Ingredient = mushroom };
+                var orderedDish1Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = tomatoe};
+                var orderedDish1Ham = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = ham};
+                var orderedDish1Mushroom = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = mushroom};
                 orderedDish1.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
                     orderedDish1Cheese,
@@ -50,9 +50,9 @@ namespace HäggesPizzeria.Data
                     orderedDish1Mushroom
                 };
 
-                var orderedDish2 = new OrderedDish { Name = "Margaritha", Price = 90};
+                var orderedDish2 = new OrderedDish {Name = "Margaritha", Price = 90};
                 var orderedDish2Cheese = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = cheese};
-                var orderedDish2Tomatoe = new OrderedDishIngredient { OrderedDish = orderedDish2, Ingredient = tomatoe};
+                var orderedDish2Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = tomatoe};
                 var orderedDish2Mushroom = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = mushroom};
                 orderedDish2.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
@@ -61,11 +61,11 @@ namespace HäggesPizzeria.Data
                     orderedDish2Mushroom
                 };
 
-                var orderedDish3 = new OrderedDish { Name = "Hawaii", Price = 100};
+                var orderedDish3 = new OrderedDish {Name = "Hawaii", Price = 100};
                 var orderedDish3Cheese = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = cheese};
-                var orderedDish3Tomatoe = new OrderedDishIngredient { OrderedDish = orderedDish3, Ingredient = tomatoe };
-                var orderedDish3Ham = new OrderedDishIngredient { OrderedDish = orderedDish3, Ingredient = ham };
-                var orderedDish3Pineapple = new OrderedDishIngredient { OrderedDish = orderedDish3, Ingredient = pineapple };
+                var orderedDish3Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = tomatoe};
+                var orderedDish3Ham = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = ham};
+                var orderedDish3Pineapple = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = pineapple};
                 orderedDish3.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
                     orderedDish3Cheese,
@@ -87,16 +87,16 @@ namespace HäggesPizzeria.Data
                 };
 
                 var margarithaCheese = new BaseDishIngredient {Dish = margaritha, Ingredient = cheese};
-                var margarithaHam = new BaseDishIngredient { Dish = margaritha, Ingredient = ham };
+                var margarithaHam = new BaseDishIngredient {Dish = margaritha, Ingredient = ham };
                 margaritha.BaseDishIngredients = new List<BaseDishIngredient> {margarithaCheese, margarithaHam};
 
                 var hawaiiCheese = new BaseDishIngredient {Dish = hawaii, Ingredient = cheese};
-                var hawaiiHam = new BaseDishIngredient { Dish = hawaii, Ingredient = ham };
-                var hawaiiPineapple = new BaseDishIngredient { Dish = hawaii, Ingredient = pineapple };
+                var hawaiiHam = new BaseDishIngredient {Dish = hawaii, Ingredient = ham};
+                var hawaiiPineapple = new BaseDishIngredient {Dish = hawaii, Ingredient = pineapple};
                 hawaii.BaseDishIngredients = new List<BaseDishIngredient> {hawaiiCheese, hawaiiHam, hawaiiPineapple};
 
-                order1.OrderedDishes = new List<OrderedDish> { orderedDish1, orderedDish2 };
-                order2.OrderedDishes = new List<OrderedDish> { orderedDish3 };
+                order1.OrderedDishes = new List<OrderedDish> {orderedDish1, orderedDish2};
+                order2.OrderedDishes = new List<OrderedDish> {orderedDish3};
 
                 context.AddRange(cheese, tomatoe, ham, mushroom, pineapple);
                 context.AddRange(capricciosa, margaritha, hawaii);
