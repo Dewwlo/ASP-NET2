@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using Microsoft.AspNetCore.Authorization;
+using HäggesPizzeria.Services;
 
 namespace HäggesPizzeria.Controllers
 {
@@ -13,10 +14,12 @@ namespace HäggesPizzeria.Controllers
     public class BaseDishController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly BaseDishService _baseDishService;
 
-        public BaseDishController(ApplicationDbContext context)
+        public BaseDishController(ApplicationDbContext context, BaseDishService baseDishService)
         {
             _context = context;
+            _baseDishService = baseDishService;
         }
 
         // GET: Dish
@@ -26,23 +29,9 @@ namespace HäggesPizzeria.Controllers
         }
 
         // GET: Dish/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dish = await _context.BaseDishes
-                .Include(d => d.BaseDishIngredients)
-                .ThenInclude(di => di.Ingredient)
-                .SingleOrDefaultAsync(m => m.BaseDishId == id);
-            if (dish == null)
-            {
-                return NotFound();
-            }
-
-            return View(dish);
+            return View(await _baseDishService.GetBaseDishWithIngredients(id));
         }
 
         // GET: Dish/Create
@@ -68,22 +57,9 @@ namespace HäggesPizzeria.Controllers
         }
 
         // GET: Dish/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dish = await _context.BaseDishes
-                .Include(d => d.BaseDishIngredients)
-                .ThenInclude(d => d.Ingredient)
-                .SingleOrDefaultAsync(m => m.BaseDishId == id);
-            if (dish == null)
-            {
-                return NotFound();
-            }
-            return View(dish);
+            return View(await _baseDishService.GetBaseDishWithIngredients(id));
         }
 
         // POST: Dish/Edit/5
@@ -155,17 +131,14 @@ namespace HäggesPizzeria.Controllers
             return _context.BaseDishes.Any(e => e.BaseDishId == id);
         }
 
-        public ActionResult UpdateBaseDishIngredient(int dishId, int ingredientId, bool addIngredient)
+        public async Task<IActionResult> UpdateBaseDishIngredient(int dishId, int ingredientId, bool addIngredient)
         {
             var result = addIngredient ?
                 _context.BaseDishIngredients.Add(new BaseDishIngredient() { BaseDishId = dishId, IngredientId = ingredientId}) :
                 _context.BaseDishIngredients.Remove(new BaseDishIngredient() {BaseDishId = dishId, IngredientId = ingredientId});
             _context.SaveChanges();
 
-            return PartialView("_IngredientPartial", _context.BaseDishes
-                    .Include(d => d.BaseDishIngredients)
-                    .ThenInclude(di => di.Ingredient)
-                    .SingleOrDefault(d => d.BaseDishId == dishId));
+            return PartialView("_IngredientPartial", await _baseDishService.GetBaseDishWithIngredients(dishId));
         }
     }
 }
