@@ -1,28 +1,25 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
+using HäggesPizzeria.Data;
 using Microsoft.AspNetCore.Mvc;
 using HäggesPizzeria.Models;
+using Microsoft.EntityFrameworkCore;
+using HäggesPizzeria.Services;
 
 namespace HäggesPizzeria.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly BaseDishService _baseDishService;
+
+        public HomeController(BaseDishService baseDishService)
         {
-            return View();
+            _baseDishService = baseDishService;
         }
 
-        public IActionResult About()
+        public async Task<IActionResult> Index()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            return View(await _baseDishService.GetAllBaseDishesWithIngredients());
         }
 
         public IActionResult Error()
