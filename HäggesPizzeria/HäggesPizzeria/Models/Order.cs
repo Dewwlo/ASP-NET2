@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HäggesPizzeria.Models
 {
@@ -6,6 +7,7 @@ namespace HäggesPizzeria.Models
     {
         public int OrderId { get; set; }
         public int TotalPrice { get; set; }
+        public DateTime OrderDate { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<OrderedDish> OrderedDishes { get; set; }
     }

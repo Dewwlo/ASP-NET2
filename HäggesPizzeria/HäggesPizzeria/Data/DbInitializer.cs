@@ -1,4 +1,5 @@
-﻿using HäggesPizzeria.Models;
+﻿using System;
+using HäggesPizzeria.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,13 +30,13 @@ namespace HäggesPizzeria.Data
                 var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10, IsActive = true };
                 var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10, IsActive = true };
                 var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true };
-
+            
                 var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true};
                 var margaritha = new BaseDish {Name = "Margaritha", Price = 90, IsActive = true};
                 var hawaii = new BaseDish {Name = "Hawaii", Price = 100, IsActive = true};
 
-                var order1 = new Order {TotalPrice = 200, User = aUser};
-                var order2 = new Order {TotalPrice = 100};
+                var order1 = new Order {TotalPrice = 200, User = aUser, OrderDate = DateTime.Now};
+                var order2 = new Order {TotalPrice = 100, OrderDate = DateTime.Now};
 
                 var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100};
                 var orderedDish1Cheese = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = cheese};

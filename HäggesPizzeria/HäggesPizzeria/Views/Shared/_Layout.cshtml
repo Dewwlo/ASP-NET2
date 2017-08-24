@@ -24,6 +24,7 @@
                     @if(User.IsInRole("Admin"))
                     {
                         <li><a asp-area="" asp-controller="BaseDish" asp-action="Index">Manage dishes</a></li>
+                        <li><a asp-area="" asp-controller="Order" asp-action="Index">Order history</a></li>
                     }
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
