@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HäggesPizzeria.Models
 {
@@ -8,6 +10,9 @@ namespace HäggesPizzeria.Models
         public string Name { get; set; }
         public int Price { get; set; }
         public Order Order { get; set; }
+        public Guid Guid { get; set; }
+        [NotMapped]
+        public ICollection<int> Ingredients { get; set; }
         public ICollection<OrderedDishIngredient> OrderedDishIngredients { get; set; }
     }
 }

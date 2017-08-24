@@ -1,0 +1,22 @@
+﻿@using System.Collections.Generic
+@model ICollection<HäggesPizzeria.Models.OrderedDish>
+
+@if (Model != null)
+{
+    <div>
+        @foreach (var dish in @Model)
+        {
+            <div>
+                @dish.Name
+                <a asp-controller="Order" asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
+            </div>
+        }
+    </div>
+    <div>
+        <a asp-controller="Order" asp-action="Create">Buy</a>
+    </div>  
+}
+else
+{
+    <div>Cart is empty</div>
+}
