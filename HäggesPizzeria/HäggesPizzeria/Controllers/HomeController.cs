@@ -19,7 +19,7 @@ namespace HäggesPizzeria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _baseDishService.GetAllBaseDishesWithIngredients());
+            return View(await _baseDishService.GetAllActiveBaseDishesWithIngredients());
         }
 
         public IActionResult Error()

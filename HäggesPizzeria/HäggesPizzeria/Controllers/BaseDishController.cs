@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,9 @@ using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using Microsoft.AspNetCore.Authorization;
 using HäggesPizzeria.Services;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using System;
 
 namespace HäggesPizzeria.Controllers
 {
@@ -22,52 +26,60 @@ namespace HäggesPizzeria.Controllers
             _baseDishService = baseDishService;
         }
 
-        // GET: Dish
         public async Task<IActionResult> Index()
         {
             return View(await _context.BaseDishes.ToListAsync());
         }
 
-        // GET: Dish/Details/5
         public async Task<IActionResult> Details(int id)
         {
             return View(await _baseDishService.GetBaseDishWithIngredients(id));
         }
 
-        // GET: Dish/Create
         public IActionResult Create()
         {
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(new List<Ingredient>()));
             return View();
         }
 
-        // POST: Dish/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Price")] BaseDish dish)
+        public async Task<IActionResult> Create([Bind("DishId,Name,Price,IsActive")] BaseDish dish)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(dish);
                 await _context.SaveChangesAsync();
+                SaveIngredientsToDish();
+                
                 return RedirectToAction(nameof(Index));
             }
-            return View(dish);
+            return View();
         }
 
-        // GET: Dish/Edit/5
+        private void SaveIngredientsToDish()
+        {
+            var ingredientsListSession = HttpContext.Session.GetString("IngredientsList");
+            var ingredients = (ingredientsListSession != null)
+                ? JsonConvert.DeserializeObject<List<Ingredient>>(ingredientsListSession)
+                : new List<Ingredient>();
+            var baseDish = _context.BaseDishes.OrderByDescending(bd => bd.BaseDishId).FirstOrDefault();
+
+            _context.BaseDishIngredients.AddRange(ingredients.Select(i => new BaseDishIngredient { IngredientId = i.IngredientId, BaseDishId = baseDish.BaseDishId }));
+            _context.SaveChanges();
+        }
+
         public async Task<IActionResult> Edit(int id)
         {
+            var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == id).Select(i => i.Ingredient).ToList();
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+
             return View(await _baseDishService.GetBaseDishWithIngredients(id));
         }
 
-        // POST: Dish/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BaseDishId,Name,Price")] BaseDish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish dish)
         {
             if (id != dish.BaseDishId)
             {
@@ -79,6 +91,7 @@ namespace HäggesPizzeria.Controllers
                 try
                 {
                     _context.Update(dish);
+                    UpdateBaseDishIngredient(dish.BaseDishId);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -97,48 +110,33 @@ namespace HäggesPizzeria.Controllers
             return View(dish);
         }
 
-        // GET: Dish/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        private void UpdateBaseDishIngredient(int baseDishId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dish = await _context.BaseDishes
-                .SingleOrDefaultAsync(m => m.BaseDishId == id);
-            if (dish == null)
-            {
-                return NotFound();
-            }
-
-            return View(dish);
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
+            _context.BaseDishIngredients.RemoveRange(_context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDishId));
+            _context.SaveChanges();
+            _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());
+            _context.SaveChanges();
         }
 
-        // POST: Dish/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public IActionResult UpdateBaseDishIngredient(int ingredientId, bool addIngredient)
         {
-            var dish = await _context.BaseDishes.SingleOrDefaultAsync(m => m.BaseDishId == id);
-            _context.BaseDishes.Remove(dish);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
+
+            if (addIngredient)
+                ingredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
+            else
+                ingredientsList.Remove(ingredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
+
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+
+            return PartialView("_IngredientPartial", ingredientsList);
         }
 
         private bool DishExists(int id)
         {
             return _context.BaseDishes.Any(e => e.BaseDishId == id);
-        }
-
-        public async Task<IActionResult> UpdateBaseDishIngredient(int dishId, int ingredientId, bool addIngredient)
-        {
-            var result = addIngredient ?
-                _context.BaseDishIngredients.Add(new BaseDishIngredient() { BaseDishId = dishId, IngredientId = ingredientId}) :
-                _context.BaseDishIngredients.Remove(new BaseDishIngredient() {BaseDishId = dishId, IngredientId = ingredientId});
-            _context.SaveChanges();
-
-            return PartialView("_IngredientPartial", await _baseDishService.GetBaseDishWithIngredients(dishId));
         }
     }
 }

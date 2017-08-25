@@ -1,8 +1,8 @@
-﻿function updateIngredient(dishId, ingredientId, addIngredient) {
+﻿function updateBaseDishIngredient(ingredientId, addIngredient) {
     $.ajax({
-        url: '../UpdateBaseDishIngredient',
+        url: '/BaseDish/UpdateBaseDishIngredient',
         type: 'POST',
-        data: { 'dishId': dishId, 'ingredientId': ingredientId, 'addIngredient': addIngredient }
+        data: { 'ingredientId': ingredientId, 'addIngredient': addIngredient }
     }).done(function (response) {
         $("#base-dish-ingredients").html(response);
     });

@@ -19,6 +19,9 @@
             <th>
                 Price
             </th>
+            <th>
+                Active dish
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +33,14 @@
             <td>
                 @item.Price
             </td>
+            @if (@item.IsActive)
+            {
+                <td>Yes</td>
+            }
+            else
+            {
+                <td>No</td>
+            }
             <td>
                 <a asp-action="Edit" asp-route-id="@item.BaseDishId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.BaseDishId">Details</a> |
