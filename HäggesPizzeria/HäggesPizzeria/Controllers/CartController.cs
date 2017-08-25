@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
@@ -12,13 +13,14 @@ namespace HäggesPizzeria.Controllers
 {
     public class CartController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly BaseDishService _baseDishService;
 
-        public CartController(BaseDishService baseDishService)
+        public CartController(ApplicationDbContext context, BaseDishService baseDishService)
         {
+            _context = context;
             _baseDishService = baseDishService;
         }
-
 
         public async Task<IActionResult> AddDishToCart(int dishId)
         {
@@ -71,5 +73,25 @@ namespace HäggesPizzeria.Controllers
                 Guid = Guid.NewGuid()
             };
         }
+
+        public IActionResult DishDetails(Guid guid)
+        {
+            List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(HttpContext.Session.GetString("Cart"));
+            var dish = cart.SingleOrDefault(c => c.Guid == guid);
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(_context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId))));
+            return View("CartDishDetails", dish);
+        }
+
+        //public IActionResult EditDishIngredients(Guid guid)
+        //{
+        //    var sessionCart = HttpContext.Session.GetString("Cart");
+        //        List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart);
+        //        cart.Remove(cart.SingleOrDefault(d => d.Guid == guid));
+        //        HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
+        //        return View("Cart", cart);
+        //    }
+
+        //    return RedirectToAction("Index", "Home");
+        //}
     }
 }

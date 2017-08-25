@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
 
 namespace HäggesPizzeria.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class BaseDishController : Controller
     {
         private readonly ApplicationDbContext _context;

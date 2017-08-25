@@ -21,8 +21,12 @@ namespace HäggesPizzeria.Services
 
         public ICollection<Ingredient> GetAllUsedIngredients(ICollection<BaseDishIngredient> usedIngredients)
         {
-            
             return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui.Ingredient == i)).ToList();
+        }
+
+        public ICollection<Ingredient> GetAllUsedIngredients(ICollection<int> usedIngredients)
+        {
+            return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui == i.IngredientId)).ToList();
         }
     }
 }

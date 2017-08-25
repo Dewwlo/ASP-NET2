@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using HäggesPizzeria.Data;
 using Microsoft.AspNetCore.Mvc;
 using HäggesPizzeria.Models;
-using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Services;
 
 namespace HäggesPizzeria.Controllers
