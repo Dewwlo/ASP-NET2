@@ -17,7 +17,7 @@ namespace HäggesPizzeria.Data
                 .HasKey(bdi => new { bdi.BaseDishId, bdi.IngredientId });
 
             builder.Entity<BaseDishIngredient>()
-                .HasOne(bdi => bdi.Dish)
+                .HasOne(bdi => bdi.BaseDish)
                 .WithMany(bd => bd.BaseDishIngredients)
                 .HasForeignKey(bdi => bdi.BaseDishId);
 

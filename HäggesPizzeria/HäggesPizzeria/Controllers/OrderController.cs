@@ -18,23 +18,19 @@ namespace HäggesPizzeria.Controllers
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly BaseDishService _baseDishService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrderController(ApplicationDbContext context, BaseDishService baseDishService, UserManager<ApplicationUser> userManager)
+        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _baseDishService = baseDishService;
             _userManager = userManager;
         }
 
-        // GET: Order
         public async Task<IActionResult> Index()
         {
             return View(await _context.Orders.ToListAsync());
         }
 
-        // GET: Order/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -52,7 +48,6 @@ namespace HäggesPizzeria.Controllers
             return View(order);
         }
 
-        // GET: Order/Create
         public async Task<IActionResult> Create()
         {
             var sessionCart = HttpContext.Session.GetString("Cart");
@@ -65,62 +60,6 @@ namespace HäggesPizzeria.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-        }
-
-        public async Task<IActionResult> AddDishToCart(int dishId)
-        {
-            var sessionCart = HttpContext.Session.GetString("Cart");
-            List <OrderedDish> cart = (sessionCart != null) 
-                ? JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart)
-                : new List<OrderedDish>();
-
-            cart.Add(CopyBaseDishToOrderedDish(await _baseDishService.GetBaseDishWithIngredients(dishId)));
-            HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult RemoveDishFromCart(Guid guid)
-        {
-            var sessionCart = HttpContext.Session.GetString("Cart");
-
-            if (sessionCart != null)
-            {
-                List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart);
-                cart.Remove(cart.SingleOrDefault(d => d.Guid == guid));
-                HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
-                return View("Cart", cart);
-            }
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult GetAllCartItems()
-        {
-            var sessionCart = HttpContext.Session.GetString("Cart");
-
-            if (sessionCart != null)
-            {
-                List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart);
-                return View("Cart", cart);
-            }
-
-            return View("Cart");
-        }
-
-        // POST: Order/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-
-        public OrderedDish CopyBaseDishToOrderedDish(BaseDish baseDish)
-        {
-            return new OrderedDish
-            {
-                Name = baseDish.Name,
-                Price = baseDish.Price,
-                Ingredients = baseDish.BaseDishIngredients.Select(bdi => bdi.Ingredient.IngredientId).ToList(),
-                Guid = Guid.NewGuid()
-            };
         }
 
         public void SaveOrder()

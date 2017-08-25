@@ -8,7 +8,8 @@
         {
             <div>
                 @dish.Name
-                <a asp-controller="Order" asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
+                <a asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
+                <a asp-action="EditDishIngredients" asp-route-guid="@dish.Guid">Edit ingredients</a>
             </div>
         }
     </div>
