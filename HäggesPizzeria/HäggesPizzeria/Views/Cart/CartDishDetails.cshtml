@@ -1,5 +1,6 @@
 ﻿@using HäggesPizzeria.Services
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using HäggesPizzeria.Models.IngredientViewModels
 @model HäggesPizzeria.Models.OrderedDish
 @inject HäggesPizzeria.Services.IngredientService IngredientService
 
@@ -12,8 +13,16 @@
     <h4>@Model.Name</h4>
     <div id="base-dish-ingredients">
         @{
-        Html.RenderPartial("_IngredientPartial", IngredientService.GetAllUsedIngredients(Model.Ingredients));
+            Html.RenderPartial("_IngredientPartial", new IngedientDishViewModel
+            {
+                DishName = Model.Name,
+                Ingredients = IngredientService.GetAllUsedIngredients(Model.Ingredients),
+                IsOrderedDish = true
+            });
         }
+    </div>
+    <div>
+        
     </div>
 </div>   
 

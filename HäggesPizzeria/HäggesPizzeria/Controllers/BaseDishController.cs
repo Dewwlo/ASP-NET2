@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
+using HäggesPizzeria.Models.IngredientViewModels;
 using Microsoft.AspNetCore.Authorization;
 using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
@@ -118,7 +119,7 @@ namespace HäggesPizzeria.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateBaseDishIngredient(int ingredientId, bool addIngredient)
+        public IActionResult UpdateDishIngredient(string dishName, int ingredientId, bool addIngredient, bool isOrderedDish)
         {
             List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
 
@@ -129,7 +130,12 @@ namespace HäggesPizzeria.Controllers
 
             HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
 
-            return PartialView("_IngredientPartial", ingredientsList);
+            return PartialView("_IngredientPartial", new IngedientDishViewModel
+            {
+                DishName = dishName,
+                Ingredients = ingredientsList,
+                IsOrderedDish = isOrderedDish
+            });
         }
 
         private bool DishExists(int id)
