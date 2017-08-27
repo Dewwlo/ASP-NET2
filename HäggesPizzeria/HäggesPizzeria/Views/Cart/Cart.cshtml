@@ -1,14 +1,15 @@
 ﻿@using System.Collections.Generic
 @model ICollection<HäggesPizzeria.Models.OrderedDish>
 
-@if (Model != null)
+@if (Model != null && Model.Count >= 1)
 {
     <div>
         @foreach (var dish in @Model)
         {
             <div>
                 @dish.Name
-                <a asp-controller="Order" asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
+                <a asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
+                <a asp-action="DishDetails" asp-route-guid="@dish.Guid">Edit ingredients</a>
             </div>
         }
     </div>

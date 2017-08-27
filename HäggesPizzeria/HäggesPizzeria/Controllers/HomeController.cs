@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using HäggesPizzeria.Data;
 using Microsoft.AspNetCore.Mvc;
 using HäggesPizzeria.Models;
-using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Services;
 
 namespace HäggesPizzeria.Controllers
@@ -19,7 +17,7 @@ namespace HäggesPizzeria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _baseDishService.GetAllBaseDishesWithIngredients());
+            return View(await _baseDishService.GetAllActiveBaseDishesWithIngredients());
         }
 
         public IActionResult Error()

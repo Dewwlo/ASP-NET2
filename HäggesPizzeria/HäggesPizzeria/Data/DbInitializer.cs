@@ -25,76 +25,68 @@ namespace HäggesPizzeria.Data
 
             if (context.BaseDishes.ToList().Count == 0)
             {
+                // Ingredients
                 var cheese = new Ingredient {Name = "Cheese", AddExtraPrice = 5, IsActive = true};
                 var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5, IsActive = true };
                 var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10, IsActive = true };
                 var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10, IsActive = true };
                 var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true };
             
+                // Dishes
                 var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true};
                 var margaritha = new BaseDish {Name = "Margaritha", Price = 90, IsActive = true};
                 var hawaii = new BaseDish {Name = "Hawaii", Price = 100, IsActive = true};
 
+                // Orders
                 var order1 = new Order {TotalPrice = 200, User = aUser, OrderDate = DateTime.Now};
                 var order2 = new Order {TotalPrice = 100, OrderDate = DateTime.Now};
 
                 var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100};
-                var orderedDish1Cheese = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = cheese};
-                var orderedDish1Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = tomatoe};
-                var orderedDish1Ham = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = ham};
-                var orderedDish1Mushroom = new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = mushroom};
                 orderedDish1.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
-                    orderedDish1Cheese,
-                    orderedDish1Tomatoe,
-                    orderedDish1Ham,
-                    orderedDish1Mushroom
+                    new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = cheese},
+                    new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = tomatoe},
+                    new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = ham},
+                    new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = mushroom}
                 };
 
                 var orderedDish2 = new OrderedDish {Name = "Margaritha", Price = 90};
-                var orderedDish2Cheese = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = cheese};
-                var orderedDish2Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = tomatoe};
-                var orderedDish2Mushroom = new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = mushroom};
                 orderedDish2.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
-                    orderedDish2Cheese,
-                    orderedDish2Tomatoe,
-                    orderedDish2Mushroom
+                    new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = cheese},
+                    new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = tomatoe},
+                    new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = mushroom}
                 };
 
                 var orderedDish3 = new OrderedDish {Name = "Hawaii", Price = 100};
-                var orderedDish3Cheese = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = cheese};
-                var orderedDish3Tomatoe = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = tomatoe};
-                var orderedDish3Ham = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = ham};
-                var orderedDish3Pineapple = new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = pineapple};
                 orderedDish3.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
-                    orderedDish3Cheese,
-                    orderedDish3Tomatoe,
-                    orderedDish3Ham,
-                    orderedDish3Pineapple
+                    new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = cheese},
+                    new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = tomatoe},
+                    new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = ham},
+                    new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = pineapple}
                 };
 
-                var capricciosaCheese = new BaseDishIngredient {Dish = capricciosa, Ingredient = cheese};
-                var capricciosaTomatoe = new BaseDishIngredient {Dish = capricciosa, Ingredient = tomatoe};
-                var capricciosaHam = new BaseDishIngredient {Dish = capricciosa, Ingredient = ham};
-                var capricciosaMushroom = new BaseDishIngredient {Dish = capricciosa, Ingredient = mushroom};
                 capricciosa.BaseDishIngredients = new List<BaseDishIngredient>
                 {
-                    capricciosaCheese,
-                    capricciosaHam,
-                    capricciosaTomatoe,
-                    capricciosaMushroom
+                    new BaseDishIngredient {BaseDish = capricciosa, Ingredient = cheese},
+                    new BaseDishIngredient {BaseDish = capricciosa, Ingredient = tomatoe},
+                    new BaseDishIngredient {BaseDish = capricciosa, Ingredient = ham},
+                    new BaseDishIngredient {BaseDish = capricciosa, Ingredient = mushroom}
                 };
 
-                var margarithaCheese = new BaseDishIngredient {Dish = margaritha, Ingredient = cheese};
-                var margarithaHam = new BaseDishIngredient {Dish = margaritha, Ingredient = ham };
-                margaritha.BaseDishIngredients = new List<BaseDishIngredient> {margarithaCheese, margarithaHam};
+                margaritha.BaseDishIngredients = new List<BaseDishIngredient>
+                {
+                    new BaseDishIngredient {BaseDish = margaritha, Ingredient = cheese},
+                    new BaseDishIngredient {BaseDish = margaritha, Ingredient = ham}
+                };
 
-                var hawaiiCheese = new BaseDishIngredient {Dish = hawaii, Ingredient = cheese};
-                var hawaiiHam = new BaseDishIngredient {Dish = hawaii, Ingredient = ham};
-                var hawaiiPineapple = new BaseDishIngredient {Dish = hawaii, Ingredient = pineapple};
-                hawaii.BaseDishIngredients = new List<BaseDishIngredient> {hawaiiCheese, hawaiiHam, hawaiiPineapple};
+                hawaii.BaseDishIngredients = new List<BaseDishIngredient>
+                {
+                    new BaseDishIngredient {BaseDish = hawaii, Ingredient = cheese},
+                    new BaseDishIngredient {BaseDish = hawaii, Ingredient = ham},
+                    new BaseDishIngredient {BaseDish = hawaii, Ingredient = pineapple}
+                };
 
                 order1.OrderedDishes = new List<OrderedDish> {orderedDish1, orderedDish2};
                 order2.OrderedDishes = new List<OrderedDish> {orderedDish3};

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
@@ -15,9 +16,9 @@ namespace HäggesPizzeria.Services
             _context = context;
         }
 
-        public async Task<ICollection<BaseDish>> GetAllBaseDishesWithIngredients()
+        public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredients()
         {
-            return await _context.BaseDishes
+            return await _context.BaseDishes.Where(bd => bd.IsActive)
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
                 .ToListAsync();
