@@ -47,27 +47,53 @@ namespace HäggesPizzeria.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var sessionCart = HttpContext.Session.GetString("Cart");
-
-            if (sessionCart != null)
+            var order = new Order();
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
             {
-                SaveOrder();
-                await SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
-                HttpContext.Session.Remove("Cart");
+                order = new Order
+                {
+                    Email = user.Email,
+                    Adress = user.Adress,
+                    Zipcode = user.Zipcode,
+                    PhoneNumber = user.PhoneNumber
+                };
             }
 
-            return RedirectToAction("Index", "Home");
+            return View("OrderPayment", order);
         }
 
-        public void SaveOrder()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Email,Adress,PhoneNumber,Zipcode")] Order order)
         {
-            _context.Orders.Add(new Order{OrderDate = DateTime.Now});
+            if (ModelState.IsValid)
+            {
+                var sessionCart = HttpContext.Session.GetString("Cart");
+
+                if (sessionCart != null)
+                {
+                    SaveOrder(order);
+                    await SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
+                    HttpContext.Session.Remove("Cart");
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View("OrderPayment", order);
+        }
+
+        public void SaveOrder(Order order)
+        {
+            _context.Orders.Add(order);
             _context.SaveChanges();
         }
 
         public async Task SaveOrderedDishes(ICollection<OrderedDish> orderedDishes)
         {
             var order = _context.Orders.OrderByDescending(o => o.OrderId).FirstOrDefault();
+            order.OrderDate = DateTime.Now;
             order.User = await _userManager.GetUserAsync(HttpContext.User);
             order.TotalPrice = orderedDishes.Sum(od => od.Price);
             CreateOrderedDishes(orderedDishes, order);
@@ -79,14 +105,12 @@ namespace HäggesPizzeria.Controllers
             {
                 _context.OrderedDishes.Add(orderedDish);
                 _context.SaveChanges();
-                var newOrderedDish = _context.OrderedDishes.OrderByDescending(od => od.OrderedDishId).FirstOrDefault();
 
+                var newOrderedDish = _context.OrderedDishes.OrderByDescending(od => od.OrderedDishId).FirstOrDefault();
                 newOrderedDish.Order = order;
-                foreach (var ingredient in orderedDish.Ingredients)
-                {
-                    _context.OrderedDishIngredients.Add(new OrderedDishIngredient { OrderedDishId = newOrderedDish.OrderedDishId, IngredientId = ingredient});
-                    _context.SaveChanges();
-                }
+
+                _context.OrderedDishIngredients.AddRange(orderedDishes.Select(od => new OrderedDishIngredient { OrderedDishId = newOrderedDish.OrderedDishId, IngredientId = od.OrderedDishId }).ToList());
+                _context.SaveChanges();
             }
         }
     }

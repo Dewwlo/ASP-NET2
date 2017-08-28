@@ -101,6 +101,18 @@ namespace HäggesPizzeria.Controllers
                 }
             }
 
+            if (model.Adress != user.Adress)
+            {
+                user.Adress = model.Adress;
+            }
+
+            if (model.Zipcode != user.Zipcode)
+            {
+                user.Zipcode = model.Zipcode;
+            }
+
+            await _userManager.UpdateAsync(user);
+
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
         }
