@@ -1,0 +1,33 @@
+﻿@model HäggesPizzeria.Models.Ingredient
+
+<form asp-controller="Ingredient" asp-action="SaveIngredient" asp-route-id="@Model.IngredientId">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IngredientId" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AddExtraPrice" class="control-label"></label>
+        <input asp-for="AddExtraPrice" class="form-control" />
+        <span asp-validation-for="AddExtraPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input asp-for="IsActive" /> Ingredient will be active
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Name != null)
+        {
+            <input type="submit" value="Save changes" class="btn btn-default" />
+        }
+        else
+        {
+            <input type="submit" value="Create new" class="btn btn-default" />
+        }
+    </div>
+</form>

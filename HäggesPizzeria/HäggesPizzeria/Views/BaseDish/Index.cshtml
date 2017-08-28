@@ -25,15 +25,15 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var dish in Model) {
         <tr>
             <td>
-                @item.Name
+                @dish.Name
             </td>
             <td>
-                @item.Price
+                @dish.Price
             </td>
-            @if (@item.IsActive)
+            @if (@dish.IsActive)
             {
                 <td>Yes</td>
             }
@@ -42,9 +42,8 @@
                 <td>No</td>
             }
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BaseDishId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BaseDishId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BaseDishId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@dish.BaseDishId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@dish.BaseDishId">Details</a> |
             </td>
         </tr>
 }
