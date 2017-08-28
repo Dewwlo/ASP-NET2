@@ -15,11 +15,13 @@ namespace HäggesPizzeria.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly BaseDishService _baseDishService;
+        private readonly IngredientService _ingredientService;
 
-        public CartController(ApplicationDbContext context, BaseDishService baseDishService)
+        public CartController(ApplicationDbContext context, BaseDishService baseDishService, IngredientService ingredientService)
         {
             _context = context;
             _baseDishService = baseDishService;
+            _ingredientService = ingredientService;
         }
 
         public async Task<IActionResult> AddDishToCart(int dishId)
@@ -86,7 +88,9 @@ namespace HäggesPizzeria.Controllers
         {
             var cart = GetSessionCartList("Cart");
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
-            dish.Ingredients = GetSessionIngredientsList("IngredientsList").Select(i => i.IngredientId).Cast<int>().ToList();
+            var ingredients = GetSessionIngredientsList("IngredientsList").ToList();
+            dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
+            dish.Price = _ingredientService.CalculateDishPrice(ingredients, dish.Name);
             SetSessionCartList("Cart", cart);
 
             return View("Cart", cart);
