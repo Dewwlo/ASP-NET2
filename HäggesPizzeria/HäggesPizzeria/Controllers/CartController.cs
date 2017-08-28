@@ -76,22 +76,40 @@ namespace HäggesPizzeria.Controllers
 
         public IActionResult DishDetails(Guid guid)
         {
-            List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(HttpContext.Session.GetString("Cart"));
+            var cart = GetSessionCartList("Cart");
             var dish = cart.SingleOrDefault(c => c.Guid == guid);
-            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(_context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId))));
+            SetSessionIngredientsList("IngredientsList", _context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId)).ToList());
             return View("CartDishDetails", dish);
         }
 
-        //public IActionResult EditDishIngredients(Guid guid)
-        //{
-        //    var sessionCart = HttpContext.Session.GetString("Cart");
-        //        List<OrderedDish> cart = JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart);
-        //        cart.Remove(cart.SingleOrDefault(d => d.Guid == guid));
-        //        HttpContext.Session.SetString("Cart", JsonConvert.SerializeObject(cart));
-        //        return View("Cart", cart);
-        //    }
+        public IActionResult SaveDishIngredients(Guid guid)
+        {
+            var cart = GetSessionCartList("Cart");
+            var dish = cart.FirstOrDefault(d => d.Guid == guid);
+            dish.Ingredients = GetSessionIngredientsList("IngredientsList").Select(i => i.IngredientId).Cast<int>().ToList();
+            SetSessionCartList("Cart", cart);
 
-        //    return RedirectToAction("Index", "Home");
-        //}
+            return View("Cart", cart);
+        }
+
+        public ICollection<OrderedDish> GetSessionCartList(string sessionName)
+        {
+            return JsonConvert.DeserializeObject<List<OrderedDish>>(HttpContext.Session.GetString(sessionName));
+        }
+
+        public ICollection<Ingredient> GetSessionIngredientsList(string sessionName)
+        {
+            return JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString(sessionName));
+        }
+
+        public void SetSessionCartList(string sessionName, ICollection<OrderedDish> list)
+        {
+            HttpContext.Session.SetString(sessionName, JsonConvert.SerializeObject(list));
+        }
+
+        public void SetSessionIngredientsList(string sessionName, ICollection<Ingredient> list)
+        {
+            HttpContext.Session.SetString(sessionName, JsonConvert.SerializeObject(list));
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<HäggesPizzeria.Models.Order>
+﻿@using System.Collections.Generic
+@model ICollection<HäggesPizzeria.Models.Order>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +14,7 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.TotalPrice)
+                    Total price
                 </th>
             <th></th>
         </tr>
@@ -22,10 +23,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
+                @item.TotalPrice
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
+                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
             </td>
         </tr>
 }
