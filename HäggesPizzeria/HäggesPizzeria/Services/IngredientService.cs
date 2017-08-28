@@ -32,11 +32,10 @@ namespace HäggesPizzeria.Services
 
         public int CalculateDishPrice(ICollection<Ingredient> ingredients, string dishName)
         {
-            var temp = _context.BaseDishes.FirstOrDefault(bd => bd.Name == dishName);
-            var basedishIngredients = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == temp.BaseDishId).Select(i => i.Ingredient).ToList();
-            //var addedIngredients = basedishIngredients.Where(bdi => !ingredients.Contains(bdi)).ToList();
-            var sum = basedishIngredients.Sum(ai => ai.AddExtraPrice) + temp.Price;
-            return sum;
+            var baseDish = _context.BaseDishes.FirstOrDefault(bd => bd.Name == dishName);
+            var basedishIngredients = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDish.BaseDishId).Select(i => i.Ingredient).ToList();
+            var addedIngredients = ingredients.Where(i => !basedishIngredients.Select(bdi => bdi.IngredientId).Contains(i.IngredientId)).ToList();
+            return addedIngredients.Sum(ai => ai.AddExtraPrice) + baseDish.Price;
         }
     }
 }
