@@ -7,5 +7,7 @@ namespace HäggesPizzeria.Models
     public class ApplicationUser : IdentityUser
     {
         public ICollection<Order> Orders { get; set; }
+        public string Adress { get; set; }
+        public string Zipcode { get; set; }
     }
 }
