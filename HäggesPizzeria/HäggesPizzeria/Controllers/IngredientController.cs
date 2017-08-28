@@ -1,8 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
+using HäggesPizzeria.Models.IngredientViewModels;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace HäggesPizzeria.Controllers
 {
@@ -65,6 +70,26 @@ namespace HäggesPizzeria.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return PartialView("_CreateEditIngredientPartial", ingredient);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateDishIngredient(string dishName, int ingredientId, bool addIngredient, bool isOrderedDish)
+        {
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
+
+            if (addIngredient)
+                ingredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
+            else
+                ingredientsList.Remove(ingredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
+
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+
+            return PartialView("_IngredientPartial", new IngedientDishViewModel
+            {
+                DishName = dishName,
+                Ingredients = ingredientsList,
+                IsOrderedDish = isOrderedDish
+            });
         }
     }
 }
