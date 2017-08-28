@@ -25,19 +25,6 @@ namespace HäggesPizzeria.Controllers
             return View(await _context.Ingredients.ToListAsync());
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(ingredient);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View("Index", ingredient);
-        }
-
         public async Task<IActionResult> CreateEditIngredient(int? ingredientId)
         {
             if (ingredientId == null)
