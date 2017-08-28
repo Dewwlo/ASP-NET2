@@ -56,6 +56,8 @@ namespace HäggesPizzeria.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
+                Adress = user.Adress,
+                Zipcode = user.Zipcode,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage
