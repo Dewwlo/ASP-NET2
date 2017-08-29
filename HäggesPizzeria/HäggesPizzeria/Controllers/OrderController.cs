@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
+using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
@@ -16,11 +17,13 @@ namespace HäggesPizzeria.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly PaymentService _paymentService;
 
-        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, PaymentService paymentService)
         {
             _context = context;
             _userManager = userManager;
+            _paymentService = paymentService;
         }
 
         public async Task<IActionResult> Index()
@@ -45,43 +48,61 @@ namespace HäggesPizzeria.Controllers
             return View(order);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> ValidateShippingInformation()
         {
             var order = new Order();
             var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
-                order = new Order
-                {
-                    Email = user.Email,
-                    Adress = user.Adress,
-                    Zipcode = user.Zipcode,
-                    PhoneNumber = user.PhoneNumber
-                };
+                order.Email = user.Email;
+                order.Adress = user.Adress;
+                order.Zipcode = user.Zipcode;
+                order.PhoneNumber = user.PhoneNumber;
+                order.User = user;
             }
 
-            return View("OrderPayment", order);
+            return View("ShippingInformation", order);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,Adress,PhoneNumber,Zipcode")] Order order)
+        public IActionResult ValidateShippingInformation([Bind("Email,Adress,PhoneNumber,Zipcode")] Order order)
         {
             if (ModelState.IsValid)
             {
+                HttpContext.Session.SetString("OrderInformation", JsonConvert.SerializeObject(order));
+                return RedirectToAction("ValidatePayment");
+            }
+
+            return View("ShippingInformation", order);
+        }
+
+        public IActionResult ValidatePayment()
+        {
+            return View("Payment");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ValidatePayment(Payment payment)
+        {
+            if (ModelState.IsValid && _paymentService.ValidatePaymentInformation(payment))
+            {
+                var sessionOrder = HttpContext.Session.GetString("OrderInformation");
                 var sessionCart = HttpContext.Session.GetString("Cart");
 
-                if (sessionCart != null)
+                if (sessionCart != null && sessionOrder != null)
                 {
-                    SaveOrder(order);
-                    await SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
+                    SaveOrder(JsonConvert.DeserializeObject<Order>(sessionOrder));
+                    SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
                     HttpContext.Session.Remove("Cart");
+                    HttpContext.Session.Remove("OrderInformation");
                 }
 
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("OrderPayment", order);
+            return View("Payment");
         }
 
         public void SaveOrder(Order order)
@@ -90,11 +111,10 @@ namespace HäggesPizzeria.Controllers
             _context.SaveChanges();
         }
 
-        public async Task SaveOrderedDishes(ICollection<OrderedDish> orderedDishes)
+        public void SaveOrderedDishes(ICollection<OrderedDish> orderedDishes)
         {
             var order = _context.Orders.OrderByDescending(o => o.OrderId).FirstOrDefault();
             order.OrderDate = DateTime.Now;
-            order.User = await _userManager.GetUserAsync(HttpContext.User);
             order.TotalPrice = orderedDishes.Sum(od => od.Price);
             CreateOrderedDishes(orderedDishes, order);
         }

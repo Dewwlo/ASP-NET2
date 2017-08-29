@@ -16,7 +16,7 @@
     </div>
     <div>Order price: @Model.Sum(d => d.Price)</div>
     <div>
-        <a asp-controller="Order" asp-action="Create">Buy</a>
+        <a asp-controller="Order" asp-action="ValidateShippingInformation">Proceed to checkout</a>
     </div>  
 }
 else
