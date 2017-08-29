@@ -8,9 +8,11 @@ namespace HäggesPizzeria.Models
     {
         public int OrderId { get; set; }
         [Required]
+        [Display(Name = "Total order price")]
         public int TotalPrice { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+        [Display(Name = "Delivery adress")]
         public string Adress { get; set; }
         [Required]
         [StringLength(5, ErrorMessage = "The {0} must be {2} characters long.", MinimumLength = 5)]

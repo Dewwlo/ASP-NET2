@@ -70,6 +70,7 @@ namespace HäggesPizzeria.Controllers
             return new OrderedDish
             {
                 Name = baseDish.Name,
+                BashDishId = baseDish.BaseDishId,
                 Price = baseDish.Price,
                 Ingredients = baseDish.BaseDishIngredients.Select(bdi => bdi.Ingredient.IngredientId).ToList(),
                 Guid = Guid.NewGuid()
@@ -90,7 +91,7 @@ namespace HäggesPizzeria.Controllers
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
             var ingredients = GetSessionIngredientsList("IngredientsList").ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
-            dish.Price = _ingredientService.CalculateDishPrice(ingredients, dish.Name);
+            dish.Price = _ingredientService.CalculateDishPrice(ingredients, dish.BashDishId);
             SetSessionCartList("Cart", cart);
 
             return View("Cart", cart);

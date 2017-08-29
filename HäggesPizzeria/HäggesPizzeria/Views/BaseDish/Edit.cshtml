@@ -39,7 +39,7 @@
             @{
                 Html.RenderPartial("_IngredientPartial", new IngedientDishViewModel
                 {
-                    DishName = Model.Name,
+                    BaseDishId = Model.BaseDishId,
                     Ingredients = IngredientService.GetAllUsedIngredients(Model.BaseDishIngredients),
                     IsOrderedDish = false
                 });

@@ -9,7 +9,7 @@
         {
             <div class="col-lg-12">
                 <p class="col-md-6">@ingredient.Name</p>
-                <button class="col-md-6" onclick="updateDishIngredient('@Model.DishName', '@ingredient.IngredientId', 'false', '@Model.IsOrderedDish')">Remove</button>
+                <button class="col-md-6" onclick="updateDishIngredient('@Model.BaseDishId', '@ingredient.IngredientId', 'false', '@Model.IsOrderedDish')">Remove</button>
             </div>
         }
     </div>
@@ -21,12 +21,12 @@
                 {
                     <p class="col-sm-4">@ingredient.Name</p>
                     <p class="col-sm-4">@ingredient.AddExtraPrice kr</p>
-                    <button class="col-sm-4" onclick="updateDishIngredient('@Model.DishName', '@ingredient.IngredientId', 'true', '@Model.IsOrderedDish')">Add</button>
+                    <button class="col-sm-4" onclick="updateDishIngredient('@Model.BaseDishId', '@ingredient.IngredientId', 'true', '@Model.IsOrderedDish')">Add</button>
                 }
                 else
                 {
                     <p class="col-sm-6">@ingredient.Name</p>
-                    <button class="col-sm-6" onclick="updateDishIngredient('@Model.DishName', '@ingredient.IngredientId', 'true', '@Model.IsOrderedDish')">Add</button>
+                    <button class="col-sm-6" onclick="updateDishIngredient('@Model.BaseDishId', '@ingredient.IngredientId', 'true', '@Model.IsOrderedDish')">Add</button>
                 }
             </div>
         }
@@ -34,7 +34,7 @@
     @if (Model.IsOrderedDish)
     {
         <div>
-            Dish price: @IngredientService.CalculateDishPrice(Model.Ingredients, Model.DishName)
+            Dish price: @IngredientService.CalculateDishPrice(Model.Ingredients, Model.BaseDishId)
         </div>
     }
 </div>

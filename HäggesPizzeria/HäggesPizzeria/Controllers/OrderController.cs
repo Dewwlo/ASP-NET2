@@ -84,7 +84,7 @@ namespace HäggesPizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ValidatePayment(Payment payment)
+        public IActionResult ValidatePayment(Payment payment)
         {
             if (ModelState.IsValid && _paymentService.ValidatePaymentInformation(payment))
             {
