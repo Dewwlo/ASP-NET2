@@ -7,6 +7,7 @@ namespace HäggesPizzeria.Models
     public class OrderedDish
     {
         public int OrderedDishId { get; set; }
+        public int BashDishId { get; set; }
         public string Name { get; set; }
         public int Price { get; set; }
         public Order Order { get; set; }

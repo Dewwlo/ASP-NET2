@@ -60,7 +60,7 @@ namespace HäggesPizzeria.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateDishIngredient(string dishName, int ingredientId, bool addIngredient, bool isOrderedDish)
+        public IActionResult UpdateDishIngredient(int baseDishId, int ingredientId, bool addIngredient, bool isOrderedDish)
         {
             List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
 
@@ -73,7 +73,7 @@ namespace HäggesPizzeria.Controllers
 
             return PartialView("_IngredientPartial", new IngedientDishViewModel
             {
-                DishName = dishName,
+                BaseDishId = baseDishId,
                 Ingredients = ingredientsList,
                 IsOrderedDish = isOrderedDish
             });
