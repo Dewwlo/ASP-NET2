@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using HäggesPizzeria.Models.IngredientViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -20,11 +21,13 @@ namespace HäggesPizzeria.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Ingredients.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateEditIngredient(int? ingredientId)
         {
             if (ingredientId == null)
@@ -38,6 +41,7 @@ namespace HäggesPizzeria.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveIngredient(int? id, [Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)

@@ -8,18 +8,18 @@
         @foreach (var dish in @Model)
         {
             <div>
-                @dish.Name
-                <a asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
-                <a asp-action="DishDetails" asp-route-guid="@dish.Guid">Edit ingredients</a>
+                <h3>@dish.Name &nbsp;<span class="label label-info">@dish.Price kr</span></h3>
+                <a class="btn btn-warning" asp-action="DishDetails" asp-route-guid="@dish.Guid">Edit ingredients</a>
+                <a class="btn btn-danger" asp-action="RemoveDishFromCart" asp-route-guid="@dish.Guid">Remove dish from cart</a>
             </div>
         }
     </div>
-    <div>Order price: @Model.Sum(d => d.Price)</div>
     <div>
-        <a asp-controller="Order" asp-action="ValidateShippingInformation">Proceed to checkout</a>
-    </div>  
+        <a class="btn btn-success" asp-controller="Order" asp-action="ValidateShippingInformation">Proceed to checkout</a>
+        <div>Order price: @Model.Sum(d => d.Price)</div>
+    </div>
 }
 else
 {
-    <div>Cart is empty</div>
+    <h1 class="text-center alert alert-warning">Cart is empty :(</h1>
 }

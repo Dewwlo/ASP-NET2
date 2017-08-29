@@ -1,26 +1,22 @@
 ﻿@using System.Collections.Generic
 @model ICollection<HäggesPizzeria.Models.BaseDish>
-
-<h1 align="center">Welcome to Hägges!</h1>
-
 <div class="col-lg-offset-2 col-lg-8">
-    @foreach (var dish in @Model)
-    {
-        <div class="col-lg-12">
-            <div class="col-md-4">
-                @dish.Name
-            </div>
-            <div class="col-md-4">
-                @foreach (var ingredient in @dish.BaseDishIngredients)
-                {
-                    <div>
-                        @ingredient.Ingredient.Name
+    <div class="row">
+        @foreach (var dish in Model)
+        {
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3>@dish.Name</h3>
+                        @foreach (var ingredient in dish.BaseDishIngredients)
+                        {
+                            <p>@ingredient.Ingredient.Name</p>
+                        }
+                        <p><a class="btn btn-primary" role="button" asp-controller="Cart" asp-action="AddDishToCart" asp-route-dishId="@dish.BaseDishId">Add to cart</a>
+                        </p>
                     </div>
-                }
+                </div>
             </div>
-            <div class="col-md-4">
-                <a asp-controller="Cart" asp-action="AddDishToCart" asp-route-dishId="@dish.BaseDishId">Add dish to cart</a>
-            </div>
-        </div>
-    }
+        }
+    </div>
 </div>

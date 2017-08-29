@@ -16,6 +16,11 @@ namespace HäggesPizzeria.Services
             _context = context;
         }
 
+        public async Task<ICollection<BaseDish>> GetAllBaseDishes()
+        {
+            return await _context.BaseDishes.ToListAsync();
+        }
+
         public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredients()
         {
             return await _context.BaseDishes.Where(bd => bd.IsActive)
