@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
@@ -9,10 +10,12 @@ namespace HäggesPizzeria.Services
     public class IngredientService
     {
         private readonly ApplicationDbContext _context;
+        private readonly BaseDishService _baseDishService;
 
-        public IngredientService(ApplicationDbContext context)
+        public IngredientService(ApplicationDbContext context, BaseDishService baseDishService)
         {
             _context = context;
+            _baseDishService = baseDishService;
         }
 
         public ICollection<Ingredient> GetAllUnusedIngredients(ICollection<Ingredient> usedIngredients)
@@ -30,12 +33,18 @@ namespace HäggesPizzeria.Services
             return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui == i.IngredientId)).ToList();
         }
 
-        public int CalculateDishPrice(ICollection<Ingredient> ingredients, int baseDishId)
+        public async Task<int> CalculateDishPrice(ICollection<Ingredient> ingredients, int baseDishId)
         {
-            var baseDish = _context.BaseDishes.SingleOrDefault(bd => bd.BaseDishId == baseDishId);
-            var basedishIngredients = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDish.BaseDishId).Select(i => i.Ingredient).ToList();
+            var baseDish = await _baseDishService.GetBaseDishWithIngredients(baseDishId);
+            var basedishIngredients = baseDish.BaseDishIngredients.Select(i => i.Ingredient).ToList();
             var addedIngredients = ingredients.Where(i => !basedishIngredients.Select(bdi => bdi.IngredientId).Contains(i.IngredientId)).ToList();
             return addedIngredients.Sum(ai => ai.AddExtraPrice) + baseDish.Price;
+        }
+
+        public async Task<bool> NotInBaseDish(Ingredient ingredient, int baseDishId)
+        {
+            var baseDish = await _baseDishService.GetBaseDishWithIngredients(baseDishId);
+            return baseDish.BaseDishIngredients.All(bdi => bdi.Ingredient != ingredient);
         }
     }
 }

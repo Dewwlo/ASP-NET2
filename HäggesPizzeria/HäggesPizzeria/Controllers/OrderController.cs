@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using HäggesPizzeria.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
@@ -26,11 +27,13 @@ namespace HäggesPizzeria.Controllers
             _paymentService = paymentService;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Orders.ToListAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace HäggesPizzeria.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class BaseDishController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,7 +26,7 @@ namespace HäggesPizzeria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BaseDishes.ToListAsync());
+            return View(await _baseDishService.GetAllBaseDishes());
         }
 
         public async Task<IActionResult> Details(int id)

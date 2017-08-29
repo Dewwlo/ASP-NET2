@@ -85,13 +85,13 @@ namespace HäggesPizzeria.Controllers
             return View("CartDishDetails", dish);
         }
 
-        public IActionResult SaveDishIngredients(Guid guid)
+        public async Task<IActionResult> SaveDishIngredients(Guid guid)
         {
             var cart = GetSessionCartList("Cart");
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
             var ingredients = GetSessionIngredientsList("IngredientsList").ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
-            dish.Price = _ingredientService.CalculateDishPrice(ingredients, dish.BashDishId);
+            dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BashDishId);
             SetSessionCartList("Cart", cart);
 
             return View("Cart", cart);
