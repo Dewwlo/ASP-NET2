@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HäggesPizzeria.Models
@@ -8,7 +9,10 @@ namespace HäggesPizzeria.Models
     {
         public int OrderedDishId { get; set; }
         public int BashDishId { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
         public string Name { get; set; }
+        [Required]
         public int Price { get; set; }
         public Order Order { get; set; }
         public Guid Guid { get; set; }
