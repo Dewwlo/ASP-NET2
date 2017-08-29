@@ -51,6 +51,7 @@ namespace HäggesPizzeria
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<BaseDishService>();
             services.AddTransient<IngredientService>();
+            services.AddTransient<PaymentService>();
 
             services.AddMvc();
 
