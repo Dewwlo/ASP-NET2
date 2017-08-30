@@ -50,11 +50,11 @@ namespace HäggesPizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveBaseDish(int? id, int categoryId, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish baseDish)
+        public async Task<IActionResult> SaveBaseDish(int id, int categoryId, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish baseDish)
         {
             if (ModelState.IsValid)
             {
-                if (id != null)
+                if (id != 0)
                 {
                     baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
                     _context.Update(baseDish);

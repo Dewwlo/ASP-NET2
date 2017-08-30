@@ -44,11 +44,11 @@ namespace HäggesPizzeria.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveIngredient(int? id, [Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)
+        public async Task<IActionResult> SaveIngredient(int id, [Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)
         {
             if (ModelState.IsValid)
             {
-                if (id != null)
+                if (id != 0)
                 {
                     _context.Update(ingredient);
                     await _context.SaveChangesAsync();

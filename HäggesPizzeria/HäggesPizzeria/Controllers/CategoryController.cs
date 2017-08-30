@@ -40,11 +40,11 @@ namespace HäggesPizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveCategory(int? id, [Bind("CategoryId,Name,IsActive")] Category category)
+        public async Task<IActionResult> SaveCategory(int id, [Bind("CategoryId,Name,IsActive")] Category category)
         {
             if (ModelState.IsValid)
             {
-                if (id != null)
+                if (id != 0)
                 {
                     _context.Update(category);
                     await _context.SaveChangesAsync();
