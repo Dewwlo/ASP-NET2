@@ -1,34 +1,58 @@
 ﻿@using System.Collections.Generic
 @model ICollection<Order>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
-        <tr>
-                <th>
-                    Total price
-                </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Order date
+        </th>
+        <th>
+            Total price
+        </th>
+        <th>
+            Phone number
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Customer name
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+    <tr>
+        <td>
+            @item.OrderDate
+        </td>
+        <td>
+            @item.TotalPrice
+        </td>
+        <td>
+            @item.PhoneNumber
+        </td>
+        <td>
+            @item.Email
+        </td>
+        @if (item.User != null)
+        {
             <td>
-                @item.TotalPrice
+                @item.User.CustomerName
             </td>
+        }
+        else
+        {
             <td>
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+                No registered user
             </td>
-        </tr>
+        }
+        <td>
+            <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+        </td>
+    </tr>
 }
     </tbody>
 </table>

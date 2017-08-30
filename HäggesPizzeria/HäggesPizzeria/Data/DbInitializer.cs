@@ -13,13 +13,29 @@ namespace HäggesPizzeria.Data
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            var aUser = new ApplicationUser {UserName = "kund@test.com", Email = "kund@test.com"};
+            var aUser = new ApplicationUser
+            {
+                UserName = "kund@test.com",
+                Email = "kund@test.com",
+                Adress = "sjövägen 3",
+                Zipcode = "11320",
+                CustomerName = "Kunden",
+                PhoneNumber = "072030202020"
+            };
             var userResult = userManager.CreateAsync(aUser, "pass");
 
-            var adminRole = new IdentityRole { Name = "Admin" };
+            var adminRole = new IdentityRole {Name = "Admin"};
             var roleResult = roleManager.CreateAsync(adminRole).Result;
 
-            var adminUser = new ApplicationUser {UserName = "admin@test.com", Email = "admin@test.com"};
+            var adminUser = new ApplicationUser
+            {
+                UserName = "admin@test.com",
+                Email = "admin@test.com",
+                Adress = "sjövägen 3",
+                Zipcode = "11320",
+                CustomerName = "Admin",
+                PhoneNumber = "072030202020"
+            };
             var adminUserResult = userManager.CreateAsync(adminUser, "pass").Result;
             var adminRoleResult = userManager.AddToRoleAsync(adminUser, "Admin");
 
