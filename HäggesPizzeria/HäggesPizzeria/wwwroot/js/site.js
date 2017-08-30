@@ -8,6 +8,16 @@
     });
 }
 
+function createEditBaseDish(baseDishId) {
+    $.ajax({
+        url: '/BaseDish/CreateEditBaseDish',
+        type: 'POST',
+        data: { 'baseDishId': baseDishId }
+    }).done(function (response) {
+        $("#create-edit-base-dish").html(response);
+    });
+}
+
 function createEditIngredient(ingredientId) {
     $.ajax({
         url: '/Ingredient/CreateEditIngredient',
@@ -15,5 +25,15 @@ function createEditIngredient(ingredientId) {
         data: { 'ingredientId': ingredientId }
     }).done(function (response) {
         $("#create-edit-ingredient").html(response);
+    });
+}
+
+function createEditCategory(categoryId) {
+    $.ajax({
+        url: '/Category/CreateEditCategory',
+        type: 'POST',
+        data: { 'categoryId': categoryId }
+    }).done(function (response) {
+        $("#create-edit-category").html(response);
     });
 }

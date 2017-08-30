@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace HäggesPizzeria.Services
 {

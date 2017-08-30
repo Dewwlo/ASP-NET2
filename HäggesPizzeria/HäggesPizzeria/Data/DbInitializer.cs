@@ -33,8 +33,8 @@ namespace HäggesPizzeria.Data
                 var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true};
 
                 // Categories
-                var pizza = new Category { Name = "Pizza" };
-                var pasta = new Category { Name = "Pasta" };
+                var pizza = new Category { Name = "Pizza", IsActive = true};
+                var pasta = new Category { Name = "Pasta", IsActive = true};
 
                 // Dishes
                 var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true, Category = pizza};

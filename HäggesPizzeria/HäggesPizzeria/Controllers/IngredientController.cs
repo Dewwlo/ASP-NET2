@@ -32,23 +32,23 @@ namespace HäggesPizzeria.Controllers
         {
             if (ingredientId == null)
             {
-                return PartialView("_CreateEditIngredientPartial", new Ingredient());
+                return PartialView("_IngredientCreateEditPartial", new Ingredient());
             }
             else
             {
-                var ingredient = await _context.Ingredients.SingleOrDefaultAsync(m => m.IngredientId == ingredientId);
-                return PartialView("_CreateEditIngredientPartial", ingredient);
+                var ingredient = await _context.Ingredients.SingleOrDefaultAsync(i => i.IngredientId == ingredientId);
+                return PartialView("_IngredientCreateEditPartial", ingredient);
             }
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveIngredient(int? id, [Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)
+        public async Task<IActionResult> SaveIngredient(int id, [Bind("IngredientId,Name,AddExtraPrice,IsActive")] Ingredient ingredient)
         {
             if (ModelState.IsValid)
             {
-                if (id != null)
+                if (id != 0)
                 {
                     _context.Update(ingredient);
                     await _context.SaveChangesAsync();
@@ -60,7 +60,7 @@ namespace HäggesPizzeria.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return PartialView("_CreateEditIngredientPartial", ingredient);
+            return PartialView("_IngredientCreateEditPartial", ingredient);
         }
 
         [HttpPost]

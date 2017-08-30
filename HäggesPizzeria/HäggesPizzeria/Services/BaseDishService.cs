@@ -18,7 +18,7 @@ namespace HäggesPizzeria.Services
 
         public async Task<ICollection<BaseDish>> GetAllBaseDishes()
         {
-            return await _context.BaseDishes.ToListAsync();
+            return await _context.BaseDishes.Include(bd => bd.Category).ToListAsync();
         }
 
         public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredients()
@@ -34,6 +34,7 @@ namespace HäggesPizzeria.Services
             return await _context.BaseDishes
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
+                .Include(c => c.Category)
                 .SingleOrDefaultAsync(m => m.BaseDishId == id);
         }
 

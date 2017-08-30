@@ -1,10 +1,10 @@
 ﻿@using System.Collections.Generic
-@model ICollection<HäggesPizzeria.Models.BaseDish>
+@model ICollection<BaseDish>
 @inject HäggesPizzeria.Services.CategoryService CategoryService
 
 <div>
     <a class="btn btn-primary" role="button" asp-controller="Home" asp-action="Index">All dishes</a>
-    @foreach (var category in await CategoryService.GetAllCategories())
+    @foreach (var category in await CategoryService.GetAllActiveCategories())
     {
         <a class="btn btn-primary" role="button" asp-controller="Home" asp-action="GetDishesByCategory" asp-route-categoryId="@category.CategoryId">@category.Name</a>
     }
