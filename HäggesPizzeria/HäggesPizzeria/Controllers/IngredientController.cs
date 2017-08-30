@@ -34,11 +34,9 @@ namespace HäggesPizzeria.Controllers
             {
                 return PartialView("_IngredientCreateEditPartial", new Ingredient());
             }
-            else
-            {
-                var ingredient = await _context.Ingredients.SingleOrDefaultAsync(i => i.IngredientId == ingredientId);
-                return PartialView("_IngredientCreateEditPartial", ingredient);
-            }
+            
+            var ingredient = await _context.Ingredients.SingleOrDefaultAsync(i => i.IngredientId == ingredientId);
+            return PartialView("_IngredientCreateEditPartial", ingredient);
         }
 
         [Authorize(Roles = "Admin")]

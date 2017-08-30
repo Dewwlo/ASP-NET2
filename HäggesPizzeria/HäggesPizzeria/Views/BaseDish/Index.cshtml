@@ -55,6 +55,6 @@
 
 <div class="col-md-4" id="create-edit-base-dish">
     @{
-        Html.RenderPartial("_BaseDishCreateEditPartial", new BaseDish());
+        Html.RenderPartial("_BaseDishCreateEditPartial", new BaseDish {BaseDishIngredients = new List<BaseDishIngredient>()});
     }
 </div>
