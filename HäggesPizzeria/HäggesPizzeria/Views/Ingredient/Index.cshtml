@@ -2,57 +2,55 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 @model ICollection<HäggesPizzeria.Models.Ingredient>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h2>Index</h2>
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            Name
-        </th>
-        <th>
-            Add extra price
-        </th>
-        <th>
-            Ingredient is active
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var ingredient in Model)
-    {
-        <tr>
-            <td>
-                @ingredient.Name
-            </td>
-            <td>
-                @ingredient.AddExtraPrice
-            </td>
-            @if (@ingredient.IsActive)
-            {
-                <td>Yes</td>
-            }
-            else
-            {
-                <td>No</td>
-            }
-            <td>
-                <a onclick="createEditIngredient('@ingredient.IngredientId')">Edit</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
 <p>
     <a onclick="createEditIngredient()">Create New</a>
 </p>
 
-<div class="col-lg-6" id="create-edit-ingredient">
+<div class="col-md-6">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Add extra price
+            </th>
+            <th>
+                Ingredient is active
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ingredient in Model)
+        {
+            <tr>
+                <td>
+                    @ingredient.Name
+                </td>
+                <td>
+                    @ingredient.AddExtraPrice
+                </td>
+                @if (@ingredient.IsActive)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+                <td>
+                    <a onclick="createEditIngredient('@ingredient.IngredientId')">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-6" id="create-edit-ingredient">
     @{
-        Html.RenderPartial("_CreateEditIngredientPartial", new Ingredient());
+        Html.RenderPartial("_IngredientCreateEditPartial", new Ingredient());
     }
 </div>

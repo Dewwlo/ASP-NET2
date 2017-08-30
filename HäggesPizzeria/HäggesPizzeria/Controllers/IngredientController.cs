@@ -32,12 +32,12 @@ namespace HäggesPizzeria.Controllers
         {
             if (ingredientId == null)
             {
-                return PartialView("_CreateEditIngredientPartial", new Ingredient());
+                return PartialView("_IngredientCreateEditPartial", new Ingredient());
             }
             else
             {
-                var ingredient = await _context.Ingredients.SingleOrDefaultAsync(m => m.IngredientId == ingredientId);
-                return PartialView("_CreateEditIngredientPartial", ingredient);
+                var ingredient = await _context.Ingredients.SingleOrDefaultAsync(i => i.IngredientId == ingredientId);
+                return PartialView("_IngredientCreateEditPartial", ingredient);
             }
         }
 
@@ -60,7 +60,7 @@ namespace HäggesPizzeria.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return PartialView("_CreateEditIngredientPartial", ingredient);
+            return PartialView("_IngredientCreateEditPartial", ingredient);
         }
 
         [HttpPost]

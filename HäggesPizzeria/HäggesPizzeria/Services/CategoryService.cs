@@ -21,5 +21,10 @@ namespace HäggesPizzeria.Services
         {
             return await _context.Categories.ToListAsync();
         }
+
+        public async Task<List<Category>> GetAllActiveCategories()
+        {
+            return await _context.Categories.Where(c => c.IsActive).ToListAsync();
+        }
     }
 }

@@ -1,0 +1,28 @@
+﻿@model HäggesPizzeria.Models.Category
+
+<form asp-controller="Category" asp-action="SaveCategory" asp-route-id="@Model.CategoryId">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="CategoryId" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input asp-for="IsActive" /> Category will be active
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Name != null)
+        {
+            <input type="submit" value="Save changes" class="btn btn-default" />
+        }
+        else
+        {
+            <input type="submit" value="Create new" class="btn btn-default" />
+        }
+    </div>
+</form>

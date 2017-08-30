@@ -17,3 +17,13 @@ function createEditIngredient(ingredientId) {
         $("#create-edit-ingredient").html(response);
     });
 }
+
+function createEditCategory(categoryId) {
+    $.ajax({
+        url: '/Category/CreateEditCategory',
+        type: 'POST',
+        data: { 'categoryId': categoryId }
+    }).done(function (response) {
+        $("#create-edit-category").html(response);
+    });
+}
