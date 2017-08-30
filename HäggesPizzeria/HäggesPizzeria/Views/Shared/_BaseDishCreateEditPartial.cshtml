@@ -1,0 +1,57 @@
+﻿@using System.Collections.Generic
+@using HäggesPizzeria.Models.IngredientViewModels
+@using HäggesPizzeria.Services
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@model BaseDish
+@inject IngredientService IngredientService
+@inject CategoryService CategoryService
+    
+<div class="row">
+    <div class="col-md-12">
+        <form asp-controller="BaseDish" asp-action="SaveBaseDish" asp-route-id="@Model.BaseDishId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BaseDishId" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Category</label>
+                <select name="categoryId" asp-for="Category.CategoryId" asp-items="await CategoryService.GetAllCategorySelectOptions()"></select>
+                <span asp-validation-for="Category.CategoryId" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox">
+                    <label><input type="checkbox" asp-for="IsActive">Dish will be active</label>
+                </div>
+            </div>
+            <div class="form-group">
+                @if (Model.Name != null)
+                {
+                    <input type="submit" value="Save changes" class="btn btn-default" />
+                }
+                else
+                {
+                    <input type="submit" value="Create new" class="btn btn-default" />
+                }
+            </div>
+        </form>
+    </div>
+    @*<div class="col-md-12" id="dish-ingredients">
+        @{
+            Html.RenderPartial("_IngredientPartial", new IngedientDishViewModel
+            {
+                Ingredients = IngredientService.GetAllUsedIngredients(new List<BaseDishIngredient>()),
+                IsOrderedDish = false
+            });
+        }
+    </div>*@
+</div>

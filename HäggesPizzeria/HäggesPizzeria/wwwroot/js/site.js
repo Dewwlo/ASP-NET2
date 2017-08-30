@@ -8,6 +8,16 @@
     });
 }
 
+function createEditBaseDish(baseDishId) {
+    $.ajax({
+        url: '/BaseDish/CreateEditBaseDish',
+        type: 'POST',
+        data: { 'baseDishId': baseDishId }
+    }).done(function (response) {
+        $("#create-edit-base-dish").html(response);
+    });
+}
+
 function createEditIngredient(ingredientId) {
     $.ajax({
         url: '/Ingredient/CreateEditIngredient',

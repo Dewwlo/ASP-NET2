@@ -29,30 +29,47 @@ namespace HäggesPizzeria.Controllers
             return View(await _baseDishService.GetAllBaseDishes());
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            return View(await _baseDishService.GetBaseDishWithIngredients(id));
-        }
-
         public IActionResult Create()
         {
             HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(new List<Ingredient>()));
             return View();
         }
 
+        public async Task<IActionResult> CreateEditBaseDish(int? basedishId)
+        {
+            if (basedishId == null)
+            {
+                return PartialView("_BaseDishCreateEditPartial", new BaseDish());
+            }
+            else
+            {
+                var baseDish = await _baseDishService.GetBaseDishWithIngredients((int) basedishId);
+                return PartialView("_BaseDishCreateEditPartial", baseDish);
+            }
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Price,IsActive")] BaseDish dish)
+        public async Task<IActionResult> SaveBaseDish(int? id, int categoryId, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish baseDish)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(dish);
-                await _context.SaveChangesAsync();
-                SaveIngredientsToDish();
-                
+                if (id != null)
+                {
+                    baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
+                    _context.Update(baseDish);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
+                    _context.Add(baseDish);
+                    await _context.SaveChangesAsync();
+                    SaveIngredientsToDish();
+                }
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return PartialView("_BaseDishCreateEditPartial", baseDish);
         }
 
         private void SaveIngredientsToDish()
