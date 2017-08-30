@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using HäggesPizzeria.Models.IngredientViewModels;
+using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -15,10 +14,12 @@ namespace HäggesPizzeria.Controllers
     public class IngredientController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IngredientService _ingredientService;
 
-        public IngredientController(ApplicationDbContext context)
+        public IngredientController(ApplicationDbContext context, IngredientService ingredientService)
         {
             _context = context;
+            _ingredientService = ingredientService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -64,13 +65,9 @@ namespace HäggesPizzeria.Controllers
         [HttpPost]
         public IActionResult UpdateDishIngredient(int baseDishId, int ingredientId, bool addIngredient, bool isOrderedDish)
         {
-            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
-
-            if (addIngredient)
-                ingredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
-            else
-                ingredientsList.Remove(ingredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
-
+            var ingredientsList = addIngredient
+                ? _ingredientService.AddIngredientToList(HttpContext, ingredientId)
+                : _ingredientService.RemoveIngredientFromList(HttpContext, ingredientId);
             HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
 
             return PartialView("_IngredientPartial", new IngedientDishViewModel
