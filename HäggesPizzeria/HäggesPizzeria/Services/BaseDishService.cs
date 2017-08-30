@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace HäggesPizzeria.Services
 {
@@ -45,6 +47,28 @@ namespace HäggesPizzeria.Services
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
                 .ToListAsync();
+        }
+
+        public void SaveIngredientsToDish(HttpContext httpContext)
+        {
+            var ingredientsListSession = httpContext.Session.GetString("IngredientsList");
+            var ingredients = (ingredientsListSession != null)
+                ? JsonConvert.DeserializeObject<List<Ingredient>>(ingredientsListSession)
+                : new List<Ingredient>();
+            var baseDish = _context.BaseDishes.OrderByDescending(bd => bd.BaseDishId).FirstOrDefault();
+
+            _context.BaseDishIngredients.AddRange(ingredients.Select(i => new BaseDishIngredient { IngredientId = i.IngredientId, BaseDishId = baseDish.BaseDishId }));
+            _context.SaveChanges();
+        }
+
+
+        public void SaveIngredientsToDish(HttpContext httpContext, int baseDishId)
+        {
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString("IngredientsList"));
+            _context.BaseDishIngredients.RemoveRange(_context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDishId));
+            _context.SaveChanges();
+            _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());
+            _context.SaveChanges();
         }
     }
 }

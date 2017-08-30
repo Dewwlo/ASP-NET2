@@ -37,13 +37,11 @@ namespace HäggesPizzeria.Controllers
                 // TODO Find another solution, ugly hack to be able to render view.
                 return PartialView("_BaseDishCreateEditPartial", new BaseDish { BaseDishIngredients = new List<BaseDishIngredient>() });
             }
-            else
-            {
-                var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == basedishId).Select(i => i.Ingredient).ToList();
-                HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
-                var baseDish = await _baseDishService.GetBaseDishWithIngredients((int) basedishId);
-                return PartialView("_BaseDishCreateEditPartial", baseDish);
-            }
+
+            var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == basedishId).Select(i => i.Ingredient).ToList();
+            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+            var baseDish = await _baseDishService.GetBaseDishWithIngredients((int) basedishId);
+            return PartialView("_BaseDishCreateEditPartial", baseDish);
         }
 
         [HttpPost]
@@ -59,38 +57,17 @@ namespace HäggesPizzeria.Controllers
                 {
                     _context.Update(baseDish);
                     await _context.SaveChangesAsync();
-                    UpdateBaseDishIngredient(baseDish.BaseDishId);
+                    _baseDishService.SaveIngredientsToDish(HttpContext, baseDish.BaseDishId);
                 }
                 else
                 {
                     _context.Add(baseDish);
                     await _context.SaveChangesAsync();
-                    SaveIngredientsToDish();
+                    _baseDishService.SaveIngredientsToDish(HttpContext);
                 }
                 return RedirectToAction(nameof(Index));
             }
             return PartialView("_BaseDishCreateEditPartial", baseDish);
-        }
-
-        private void SaveIngredientsToDish()
-        {
-            var ingredientsListSession = HttpContext.Session.GetString("IngredientsList");
-            var ingredients = (ingredientsListSession != null)
-                ? JsonConvert.DeserializeObject<List<Ingredient>>(ingredientsListSession)
-                : new List<Ingredient>();
-            var baseDish = _context.BaseDishes.OrderByDescending(bd => bd.BaseDishId).FirstOrDefault();
-
-            _context.BaseDishIngredients.AddRange(ingredients.Select(i => new BaseDishIngredient { IngredientId = i.IngredientId, BaseDishId = baseDish.BaseDishId }));
-            _context.SaveChanges();
-        }
-
-        private void UpdateBaseDishIngredient(int baseDishId)
-        {
-            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
-            _context.BaseDishIngredients.RemoveRange(_context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDishId));
-            _context.SaveChanges();
-            _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());
-            _context.SaveChanges();
         }
     }
 }
