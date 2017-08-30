@@ -14,6 +14,7 @@ namespace HäggesPizzeria.Models
         [Required]
         public int Price { get; set; }
         public bool IsActive { get; set; }
+        public Category Category { get; set; }
         public ICollection<BaseDishIngredient> BaseDishIngredients { get; set; }
     }
 }

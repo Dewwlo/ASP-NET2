@@ -49,6 +49,7 @@ namespace HäggesPizzeria.Data
         public DbSet<BaseDishIngredient> BaseDishIngredients { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderedDish> OrderedDishes { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public DbSet<OrderedDishIngredient> OrderedDishIngredients { get; set; }
     }
 }

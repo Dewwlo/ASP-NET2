@@ -14,6 +14,7 @@ namespace HäggesPizzeria.Models
         public string Name { get; set; }
         [Required]
         public int Price { get; set; }
+        public Category Category { get; set; }
         public Order Order { get; set; }
         public Guid Guid { get; set; }
         [NotMapped]

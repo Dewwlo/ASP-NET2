@@ -36,5 +36,14 @@ namespace HäggesPizzeria.Services
                 .ThenInclude(di => di.Ingredient)
                 .SingleOrDefaultAsync(m => m.BaseDishId == id);
         }
+
+        public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredientsByCategory(int categoryId)
+        {
+            return await _context.BaseDishes
+                .Where(bd => bd.IsActive && bd.Category.CategoryId == categoryId)
+                .Include(d => d.BaseDishIngredients)
+                .ThenInclude(di => di.Ingredient)
+                .ToListAsync();
+        }
     }
 }

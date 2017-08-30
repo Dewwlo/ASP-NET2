@@ -27,21 +27,26 @@ namespace HäggesPizzeria.Data
             {
                 // Ingredients
                 var cheese = new Ingredient {Name = "Cheese", AddExtraPrice = 5, IsActive = true};
-                var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5, IsActive = true };
-                var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10, IsActive = true };
-                var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10, IsActive = true };
-                var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true };
-            
+                var tomatoe = new Ingredient {Name = "Tomatoe", AddExtraPrice = 5, IsActive = true};
+                var ham = new Ingredient {Name = "Ham", AddExtraPrice = 10, IsActive = true};
+                var mushroom = new Ingredient {Name = "Mushroom", AddExtraPrice = 10, IsActive = true};
+                var pineapple = new Ingredient {Name = "Pineapple", AddExtraPrice = 10, IsActive = true};
+
+                // Categories
+                var pizza = new Category { Name = "Pizza" };
+                var pasta = new Category { Name = "Pasta" };
+
                 // Dishes
-                var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true};
-                var margaritha = new BaseDish {Name = "Margaritha", Price = 90, IsActive = true};
-                var hawaii = new BaseDish {Name = "Hawaii", Price = 100, IsActive = true};
+                var capricciosa = new BaseDish {Name = "Capricciosa", Price = 100, IsActive = true, Category = pizza};
+                var margherita = new BaseDish {Name = "Margherita", Price = 90, IsActive = true, Category = pizza};
+                var hawaii = new BaseDish {Name = "Hawaii", Price = 100, IsActive = true, Category = pizza};
+                var pastacarbonara = new BaseDish {Name = "Pasta carbonara", Price = 90, IsActive = true, Category = pasta};
 
                 // Orders
                 var order1 = new Order {TotalPrice = 200, User = aUser, OrderDate = DateTime.Now};
                 var order2 = new Order {TotalPrice = 100, OrderDate = DateTime.Now};
 
-                var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100};
+                var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100, Category = pizza};
                 orderedDish1.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
                     new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = cheese},
@@ -50,7 +55,7 @@ namespace HäggesPizzeria.Data
                     new OrderedDishIngredient {OrderedDish = orderedDish1, Ingredient = mushroom}
                 };
 
-                var orderedDish2 = new OrderedDish {Name = "Margaritha", Price = 90};
+                var orderedDish2 = new OrderedDish {Name = "Margaritha", Price = 90, Category = pizza};
                 orderedDish2.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
                     new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = cheese},
@@ -58,7 +63,7 @@ namespace HäggesPizzeria.Data
                     new OrderedDishIngredient {OrderedDish = orderedDish2, Ingredient = mushroom}
                 };
 
-                var orderedDish3 = new OrderedDish {Name = "Hawaii", Price = 100};
+                var orderedDish3 = new OrderedDish {Name = "Hawaii", Price = 100, Category = pizza};
                 orderedDish3.OrderedDishIngredients = new List<OrderedDishIngredient>
                 {
                     new OrderedDishIngredient {OrderedDish = orderedDish3, Ingredient = cheese},
@@ -75,10 +80,10 @@ namespace HäggesPizzeria.Data
                     new BaseDishIngredient {BaseDish = capricciosa, Ingredient = mushroom}
                 };
 
-                margaritha.BaseDishIngredients = new List<BaseDishIngredient>
+                margherita.BaseDishIngredients = new List<BaseDishIngredient>
                 {
-                    new BaseDishIngredient {BaseDish = margaritha, Ingredient = cheese},
-                    new BaseDishIngredient {BaseDish = margaritha, Ingredient = ham}
+                    new BaseDishIngredient {BaseDish = margherita, Ingredient = cheese},
+                    new BaseDishIngredient {BaseDish = margherita, Ingredient = ham}
                 };
 
                 hawaii.BaseDishIngredients = new List<BaseDishIngredient>
@@ -92,9 +97,10 @@ namespace HäggesPizzeria.Data
                 order2.OrderedDishes = new List<OrderedDish> {orderedDish3};
 
                 context.AddRange(cheese, tomatoe, ham, mushroom, pineapple);
-                context.AddRange(capricciosa, margaritha, hawaii);
+                context.AddRange(capricciosa, margherita, hawaii, pastacarbonara);
                 context.AddRange(order1, order2);
                 context.AddRange(orderedDish1, orderedDish2, orderedDish3);
+                context.AddRange(pizza, pasta);
 
                 context.SaveChanges();
             }
