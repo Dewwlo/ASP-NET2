@@ -26,23 +26,21 @@ namespace HäggesPizzeria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _baseDishService.GetAllBaseDishes());
-        }
-
-        public IActionResult Create()
-        {
             HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(new List<Ingredient>()));
-            return View();
+            return View(await _baseDishService.GetAllBaseDishes());
         }
 
         public async Task<IActionResult> CreateEditBaseDish(int? basedishId)
         {
             if (basedishId == null)
             {
-                return PartialView("_BaseDishCreateEditPartial", new BaseDish());
+                // TODO Find another solution, ugly hack to be able to render view.
+                return PartialView("_BaseDishCreateEditPartial", new BaseDish { BaseDishIngredients = new List<BaseDishIngredient>() });
             }
             else
             {
+                var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == basedishId).Select(i => i.Ingredient).ToList();
+                HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
                 var baseDish = await _baseDishService.GetBaseDishWithIngredients((int) basedishId);
                 return PartialView("_BaseDishCreateEditPartial", baseDish);
             }
@@ -50,19 +48,21 @@ namespace HäggesPizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveBaseDish(int id, int categoryId, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish baseDish)
+        public async Task<IActionResult> SaveBaseDish(int baseDishId, int categoryId, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish baseDish)
         {
             if (ModelState.IsValid)
             {
-                if (id != 0)
+                baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
+
+                // TODO Another way to differ between create/edit mode
+                if (baseDishId != 0)
                 {
-                    baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
                     _context.Update(baseDish);
                     await _context.SaveChangesAsync();
+                    UpdateBaseDishIngredient(baseDish.BaseDishId);
                 }
                 else
                 {
-                    baseDish.Category = _context.Categories.SingleOrDefault(c => c.CategoryId == categoryId);
                     _context.Add(baseDish);
                     await _context.SaveChangesAsync();
                     SaveIngredientsToDish();
@@ -84,47 +84,6 @@ namespace HäggesPizzeria.Controllers
             _context.SaveChanges();
         }
 
-        public async Task<IActionResult> Edit(int id)
-        {
-            var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == id).Select(i => i.Ingredient).ToList();
-            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
-
-            return View(await _baseDishService.GetBaseDishWithIngredients(id));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BaseDishId,Name,Price,IsActive")] BaseDish dish)
-        {
-            if (id != dish.BaseDishId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(dish);
-                    UpdateBaseDishIngredient(dish.BaseDishId);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DishExists(dish.BaseDishId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(dish);
-        }
-
         private void UpdateBaseDishIngredient(int baseDishId)
         {
             List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(HttpContext.Session.GetString("IngredientsList"));
@@ -132,11 +91,6 @@ namespace HäggesPizzeria.Controllers
             _context.SaveChanges();
             _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());
             _context.SaveChanges();
-        }
-
-        private bool DishExists(int id)
-        {
-            return _context.BaseDishes.Any(e => e.BaseDishId == id);
         }
     }
 }

@@ -9,7 +9,7 @@
     
 <div class="row">
     <div class="col-md-12">
-        <form asp-controller="BaseDish" asp-action="SaveBaseDish" asp-route-id="@Model.BaseDishId">
+        <form asp-controller="BaseDish" asp-action="SaveBaseDish" asp-route-baseDishId="@Model.BaseDishId">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="BaseDishId" />
             <div class="form-group">
@@ -45,13 +45,13 @@
             </div>
         </form>
     </div>
-    @*<div class="col-md-12" id="dish-ingredients">
+    <div class="col-md-12" id="dish-ingredients">
         @{
             Html.RenderPartial("_IngredientPartial", new IngedientDishViewModel
             {
-                Ingredients = IngredientService.GetAllUsedIngredients(new List<BaseDishIngredient>()),
+                Ingredients = IngredientService.GetAllUsedIngredients(Model.BaseDishIngredients),
                 IsOrderedDish = false
             });
         }
-    </div>*@
+    </div>
 </div>
