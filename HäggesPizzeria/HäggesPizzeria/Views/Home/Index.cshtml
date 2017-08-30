@@ -2,14 +2,14 @@
 @model ICollection<BaseDish>
 @inject HäggesPizzeria.Services.CategoryService CategoryService
 
-<div>
+<div class="text-center">
     <a class="btn btn-primary" role="button" asp-controller="Home" asp-action="Index">All dishes</a>
     @foreach (var category in await CategoryService.GetAllActiveCategories())
     {
         <a class="btn btn-primary" role="button" asp-controller="Home" asp-action="GetDishesByCategory" asp-route-categoryId="@category.CategoryId">@category.Name</a>
     }
 </div>
-
+<hr/>
 <div class="col-lg-offset-2 col-lg-8">
     <div class="row">
         @foreach (var dish in Model)

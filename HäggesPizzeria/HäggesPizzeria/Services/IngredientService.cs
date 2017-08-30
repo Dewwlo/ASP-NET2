@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace HäggesPizzeria.Services
 {
@@ -44,6 +46,20 @@ namespace HäggesPizzeria.Services
         {
             var baseDish = await _baseDishService.GetBaseDishWithIngredients(baseDishId);
             return baseDish.BaseDishIngredients.All(bdi => bdi.Ingredient != ingredient);
+        }
+
+        public ICollection<Ingredient> AddIngredientToList(HttpContext httpContext, int ingredientId)
+        {
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString("IngredientsList"));
+            ingredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
+            return ingredientsList;
+        }
+
+        public ICollection<Ingredient> RemoveIngredientFromList(HttpContext httpContext, int ingredientId)
+        {
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString("IngredientsList"));
+            ingredientsList.Remove(ingredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
+            return ingredientsList;
         }
     }
 }
