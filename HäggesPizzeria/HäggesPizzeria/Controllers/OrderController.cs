@@ -30,7 +30,11 @@ namespace HäggesPizzeria.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders.ToListAsync());
+            return View(await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderedDishes)
+                .ThenInclude(od => od.OrderedDishIngredients)
+                .ThenInclude(odi => odi.Ingredient).ToListAsync());
         }
 
         [Authorize(Roles = "Admin")]
@@ -61,7 +65,6 @@ namespace HäggesPizzeria.Controllers
                 order.Adress = user.Adress;
                 order.Zipcode = user.Zipcode;
                 order.PhoneNumber = user.PhoneNumber;
-                order.User = user;
             }
 
             return View("ShippingInformation", order);
@@ -119,6 +122,7 @@ namespace HäggesPizzeria.Controllers
             var order = _context.Orders.OrderByDescending(o => o.OrderId).FirstOrDefault();
             order.OrderDate = DateTime.Now;
             order.TotalPrice = orderedDishes.Sum(od => od.Price);
+            order.User = _context.Users.SingleOrDefault(u => u.Email == order.Email);
             CreateOrderedDishes(orderedDishes, order);
         }
 

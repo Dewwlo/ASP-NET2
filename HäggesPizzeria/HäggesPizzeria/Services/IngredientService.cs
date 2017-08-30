@@ -21,17 +21,17 @@ namespace HäggesPizzeria.Services
 
         public ICollection<Ingredient> GetAllUnusedIngredients(ICollection<Ingredient> usedIngredients)
         {
-            return _context.Ingredients.Where(i => usedIngredients.All(ui => ui.IngredientId != i.IngredientId) && i.IsActive).ToList();
+            return _context.Ingredients.Where(i => usedIngredients.All(ui => ui.IngredientId != i.IngredientId) && i.IsActive).OrderBy(i => i.Name).ToList();
         }
 
         public ICollection<Ingredient> GetAllUsedIngredients(ICollection<BaseDishIngredient> usedIngredients)
         {
-            return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui.Ingredient == i)).ToList();
+            return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui.Ingredient == i)).OrderBy(i => i.Name).ToList();
         }
 
         public ICollection<Ingredient> GetAllUsedIngredients(ICollection<int> usedIngredients)
         {
-            return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui == i.IngredientId)).ToList();
+            return _context.Ingredients.Where(i => usedIngredients.Any(ui => ui == i.IngredientId)).OrderBy(i => i.Name).ToList();
         }
 
         public async Task<int> CalculateDishPrice(ICollection<Ingredient> ingredients, int baseDishId)
