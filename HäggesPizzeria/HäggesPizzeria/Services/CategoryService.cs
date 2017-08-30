@@ -30,7 +30,7 @@ namespace HäggesPizzeria.Services
 
         public async Task<ICollection<SelectListItem>> GetAllCategorySelectOptions()
         {
-            return await _context.Categories.Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name }).ToListAsync();
+            return await _context.Categories.Where(c => c.IsActive).Select(c => new SelectListItem { Value = c.CategoryId.ToString(), Text = c.Name }).ToListAsync();
         }
     }
 }
