@@ -220,6 +220,7 @@ namespace HäggesPizzeria.Controllers
                 {
                     UserName = model.Email,
                     Email = model.Email,
+                    CustomerName = model.CustomerName,
                     PhoneNumber = model.PhoneNumber,
                     Adress = model.Adress,
                     Zipcode = model.Zipecode

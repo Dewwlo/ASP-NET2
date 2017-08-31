@@ -14,6 +14,11 @@ namespace HäggesPizzeria.Models.AccountViewModels
         public string Email { get; set; }
 
         [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
+        [Display(Name = "Customer name")]
+        public string CustomerName { get; set; }
+
+        [Required]
         [Phone(ErrorMessage = "Must be a valid phone number")]
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }

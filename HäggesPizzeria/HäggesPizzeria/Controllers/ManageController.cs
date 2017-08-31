@@ -56,6 +56,7 @@ namespace HäggesPizzeria.Controllers
             {
                 Username = user.UserName,
                 Email = user.Email,
+                CustomerName = user.CustomerName,
                 Adress = user.Adress,
                 Zipcode = user.Zipcode,
                 PhoneNumber = user.PhoneNumber,
@@ -109,6 +110,11 @@ namespace HäggesPizzeria.Controllers
             if (model.Zipcode != user.Zipcode)
             {
                 user.Zipcode = model.Zipcode;
+            }
+
+            if (model.CustomerName != user.CustomerName)
+            {
+                user.CustomerName = model.CustomerName;
             }
 
             await _userManager.UpdateAsync(user);
