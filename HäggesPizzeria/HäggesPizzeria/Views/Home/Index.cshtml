@@ -22,8 +22,12 @@
                         {
                             <p>@ingredient.Ingredient.Name</p>
                         }
-                        <p><a class="btn btn-primary" role="button" asp-controller="Cart" asp-action="AddDishToCart" asp-route-dishId="@dish.BaseDishId">Add to cart</a>
+                        <p>
+                            <a class="btn btn-primary" role="button" asp-controller="Cart" asp-action="AddDishToCart" asp-route-dishId="@dish.BaseDishId">
+                                Add to cart <i class="fa fa-cart-plus fa-2x" aria-hidden="true"></i>
+                            </a>
                         </p>
+                        <p>@dish.Price kr</p>
                     </div>
                 </div>
             </div>

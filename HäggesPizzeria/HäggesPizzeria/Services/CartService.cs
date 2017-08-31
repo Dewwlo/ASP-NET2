@@ -75,7 +75,7 @@ namespace HäggesPizzeria.Services
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
             var ingredients = GetSessionIngredientsList(httpContext, "IngredientsList").ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
-            dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BashDishId);
+            dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BaseDishId);
             SetSessionCartList(httpContext, "Cart", cart);
 
             return cart;
@@ -106,7 +106,7 @@ namespace HäggesPizzeria.Services
             return new OrderedDish
             {
                 Name = baseDish.Name,
-                BashDishId = baseDish.BaseDishId,
+                BaseDishId = baseDish.BaseDishId,
                 Price = baseDish.Price,
                 Ingredients = baseDish.BaseDishIngredients.Select(bdi => bdi.Ingredient.IngredientId).ToList(),
                 Guid = Guid.NewGuid()
@@ -119,11 +119,12 @@ namespace HäggesPizzeria.Services
             {
                 Items = orderedDishes.Count,
                 TotalPrice = orderedDishes.Sum(od => od.Price),
-                BaseDishesPrice = _context.BaseDishes
-                    .Where(bd => orderedDishes.Any(od => od.BashDishId == bd.BaseDishId))
-                    .Select(bd => bd.Price)
-                    .Sum()
             };
+
+            foreach (var orderedDish in orderedDishes)
+            {
+                cartDetails.BaseDishesPrice += _context.BaseDishes.SingleOrDefault(bd => bd.BaseDishId == orderedDish.BaseDishId).Price;
+            }
             cartDetails.AddedIngredientsPrice = cartDetails.TotalPrice - cartDetails.BaseDishesPrice;
 
             return cartDetails;

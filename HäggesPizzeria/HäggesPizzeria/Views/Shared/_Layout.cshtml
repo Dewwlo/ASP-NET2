@@ -9,7 +9,7 @@
     <title>@ViewData["Title"] - HäggesPizzeria</title>
 
     <environment include="Development">
-        <link href="lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css"/>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
         <link rel="stylesheet" href="~/css/site.css"/>
     </environment>
@@ -21,9 +21,11 @@
     </environment>
 </head>
 <body>
-<div class="page-header">
-    <h1>Welcome to Hägges!</h1>
-    @await Component.InvokeAsync("Cart", new CartDetails())
+<div class="page-header row">
+    <h1 class="layout-header col-md-offset-1">Welcome to Hägges!</h1>
+    <a asp-controller="Cart" asp-action="GetAllCartItems" class="cart-details">
+        @await Component.InvokeAsync("Cart", new CartDetails())
+    </a>
 </div>
 <nav class="navbar navbar-default">
     <div class="container">

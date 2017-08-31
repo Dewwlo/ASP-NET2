@@ -33,3 +33,37 @@
         display: none;
     }
 }
+
+.fa-shopping-cart {
+    font-size: 3em;
+    color: darkcyan;
+}
+
+.layout-header {
+    display: inline;
+    color: darkcyan;
+}
+
+.cart-details {
+    cursor: pointer;
+    text-align: right;
+    float: right;
+    margin-right: 5%;
+}
+
+.cart-details:hover {
+    text-decoration: none;
+}
+
+.cart-text-price {
+    color: darkred
+}
+
+.fa-cart-plus {
+    font-size: 1.5em
+}
+
+.checkout {
+    float: right;
+    font-size: 1.5em
+}

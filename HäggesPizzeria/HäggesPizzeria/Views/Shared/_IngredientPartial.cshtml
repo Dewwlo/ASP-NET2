@@ -30,7 +30,7 @@
 <div class="col-sm-12">
     @if (Model.IsOrderedDish)
     {
-        <div>
+        <div class="checkout">
             Dish price: @await IngredientService.CalculateDishPrice(Model.Ingredients, Model.BaseDishId)
         </div>
     }
