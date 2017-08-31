@@ -1,0 +1,11 @@
+﻿@model CartDetails
+
+<div>
+    <div>
+        <i class="fa fa-shopping-cart" aria-hidden="true">@Model.Items</i>
+    </div>
+</div>
+<div class="cart-text-price">
+    <div>Total price @Model.TotalPrice kr</div>
+    <div>Added ingredients: @Model.AddedIngredientsPrice kr</div>    
+</div>

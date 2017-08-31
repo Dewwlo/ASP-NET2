@@ -21,7 +21,19 @@ namespace HäggesPizzeria.Services
             _ingredientService = ingredientService;
             _baseDishService = baseDishService;
         }
-        
+
+        public CartDetails GetCartDetails(HttpContext httpContext)
+        {
+            var sessionCart = httpContext.Session.GetString("Cart");
+
+            if (sessionCart != null)
+            {
+                return CalculateCartDetails(GetSessionCartList(httpContext, "Cart"));
+            }
+
+            return new CartDetails();
+        }
+
         public async Task AddDishToCart(HttpContext httpContext, int dishId)
         {
             var sessionCart = httpContext.Session.GetString("Cart");
@@ -63,7 +75,7 @@ namespace HäggesPizzeria.Services
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
             var ingredients = GetSessionIngredientsList(httpContext, "IngredientsList").ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
-            dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BashDishId);
+            dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BaseDishId);
             SetSessionCartList(httpContext, "Cart", cart);
 
             return cart;
@@ -94,11 +106,28 @@ namespace HäggesPizzeria.Services
             return new OrderedDish
             {
                 Name = baseDish.Name,
-                BashDishId = baseDish.BaseDishId,
+                BaseDishId = baseDish.BaseDishId,
                 Price = baseDish.Price,
                 Ingredients = baseDish.BaseDishIngredients.Select(bdi => bdi.Ingredient.IngredientId).ToList(),
                 Guid = Guid.NewGuid()
             };
+        }
+
+        private CartDetails CalculateCartDetails(ICollection<OrderedDish> orderedDishes)
+        {
+            var cartDetails = new CartDetails
+            {
+                Items = orderedDishes.Count,
+                TotalPrice = orderedDishes.Sum(od => od.Price),
+            };
+
+            foreach (var orderedDish in orderedDishes)
+            {
+                cartDetails.BaseDishesPrice += _context.BaseDishes.SingleOrDefault(bd => bd.BaseDishId == orderedDish.BaseDishId).Price;
+            }
+            cartDetails.AddedIngredientsPrice = cartDetails.TotalPrice - cartDetails.BaseDishesPrice;
+
+            return cartDetails;
         }
     }
 }
