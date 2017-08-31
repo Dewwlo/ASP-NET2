@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HäggesPizzeria.Data;
 using HäggesPizzeria.Models;
 using HäggesPizzeria.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,37 +12,27 @@ namespace HäggesPizzeria.Controllers
 {
     public class OrderController : Controller
     {
-        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly PaymentService _paymentService;
+        private readonly OrderService _orderService;
 
-        public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, PaymentService paymentService)
+        public OrderController(UserManager<ApplicationUser> userManager, PaymentService paymentService, OrderService orderService)
         {
-            _context = context;
             _userManager = userManager;
             _paymentService = paymentService;
+            _orderService = orderService;
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderedDishes)
-                .ThenInclude(od => od.OrderedDishIngredients)
-                .ThenInclude(odi => odi.Ingredient).ToListAsync());
+            return View(await _orderService.GetAllOrdersWithOrderedDishes());
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .SingleOrDefaultAsync(m => m.OrderId == id);
+            var order = _orderService.GetOrderWithOrderedDishes(id);
             if (order == null)
             {
                 return NotFound();
@@ -99,8 +85,8 @@ namespace HäggesPizzeria.Controllers
 
                 if (sessionCart != null && sessionOrder != null)
                 {
-                    SaveOrder(JsonConvert.DeserializeObject<Order>(sessionOrder));
-                    SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
+                    _orderService.SaveOrder(JsonConvert.DeserializeObject<Order>(sessionOrder));
+                    _orderService.SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
                     HttpContext.Session.Remove("Cart");
                     HttpContext.Session.Remove("OrderInformation");
                 }
@@ -109,36 +95,6 @@ namespace HäggesPizzeria.Controllers
             }
 
             return View("Payment");
-        }
-
-        public void SaveOrder(Order order)
-        {
-            _context.Orders.Add(order);
-            _context.SaveChanges();
-        }
-
-        public void SaveOrderedDishes(ICollection<OrderedDish> orderedDishes)
-        {
-            var order = _context.Orders.OrderByDescending(o => o.OrderId).FirstOrDefault();
-            order.OrderDate = DateTime.Now;
-            order.TotalPrice = orderedDishes.Sum(od => od.Price);
-            order.User = _context.Users.SingleOrDefault(u => u.Email == order.Email);
-            CreateOrderedDishes(orderedDishes, order);
-        }
-
-        public void CreateOrderedDishes(ICollection<OrderedDish> orderedDishes, Order order)
-        {
-            foreach (var orderedDish in orderedDishes)
-            {
-                _context.OrderedDishes.Add(orderedDish);
-                _context.SaveChanges();
-
-                var newOrderedDish = _context.OrderedDishes.OrderByDescending(od => od.OrderedDishId).FirstOrDefault();
-                newOrderedDish.Order = order;
-
-                _context.OrderedDishIngredients.AddRange(orderedDishes.Select(od => new OrderedDishIngredient { OrderedDishId = newOrderedDish.OrderedDishId, IngredientId = od.OrderedDishId }).ToList());
-                _context.SaveChanges();
-            }
         }
     }
 }
