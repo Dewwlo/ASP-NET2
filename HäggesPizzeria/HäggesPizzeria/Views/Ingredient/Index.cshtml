@@ -3,7 +3,7 @@
 @model ICollection<Ingredient>
 
 <p>
-    <a onclick="createEditIngredient()">Create New</a>
+    <a class="btn btn-default" onclick="createEditIngredient()">Create New</a>
 </p>
 
 <div class="col-md-6">
@@ -41,7 +41,7 @@
                     <td>No</td>
                 }
                 <td>
-                    <a onclick="createEditIngredient('@ingredient.IngredientId')">Edit</a>
+                    <a class="btn btn-default" onclick="createEditIngredient('@ingredient.IngredientId')">Edit</a>
                 </td>
             </tr>
         }

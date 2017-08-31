@@ -3,7 +3,7 @@
 @model ICollection<BaseDish>
 
 <p>
-    <a onclick="createEditBaseDish()">Create New</a>
+    <a class="btn btn-default" onclick="createEditBaseDish()">Create New</a>
 </p>
 <div class="col-md-8">
     <table class="table">
@@ -45,7 +45,7 @@
                     @dish.Category.Name
                 </td>
                 <td>
-                    <a onclick="createEditBaseDish('@dish.BaseDishId')">Edit</a>
+                    <a class="btn btn-default" onclick="createEditBaseDish('@dish.BaseDishId')">Edit</a>
                 </td>
             </tr>
         }

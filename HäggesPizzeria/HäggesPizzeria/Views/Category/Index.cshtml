@@ -3,7 +3,7 @@
 @model IEnumerable<Category>
 
 <p>
-    <a onclick="createEditCategory()">Create new</a>
+    <a class="btn btn-default" onclick="createEditCategory()">Create new</a>
 </p>
 <div class="col-md-6">
     <table class="table">
@@ -33,7 +33,7 @@
                     <td>No</td>
                 }
                 <td>
-                    <a onclick="createEditCategory('@category.CategoryId')">Edit</a>
+                    <a class="btn btn-default" onclick="createEditCategory('@category.CategoryId')">Edit</a>
                 </td>
             </tr>
         }
