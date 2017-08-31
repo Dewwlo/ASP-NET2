@@ -35,18 +35,20 @@
                 <li><a asp-area="" asp-controller="Cart" asp-action="GetAllCartItems">Cart</a></li>
             </ul>
             @await Html.PartialAsync("_LoginPartial")
-            @if (User.IsInRole("Admin"))
-            {
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a asp-area="" asp-controller="Category" asp-action="Index">Manage Categories</a></li>
-                    <li><a asp-area="" asp-controller="BaseDish" asp-action="Index">Manage dishes</a></li>
-                    <li><a asp-area="" asp-controller="Ingredient" asp-action="Index">Manage ingredients</a></li>
-                    <li><a asp-area="" asp-controller="Order" asp-action="Index">Order history</a></li>
-                </ul>
-            }
         </div>
     </div>
 </nav>
+@if (User.IsInRole("Admin"))
+{
+    <ul class="nav nav-pills nav-stacked sidenav">
+        <li><a asp-area="" asp-controller="Category" asp-action="Index">Manage Categories</a></li>
+        <li><a asp-area="" asp-controller="BaseDish" asp-action="Index">Manage dishes</a></li>
+        <li><a asp-area="" asp-controller="Ingredient" asp-action="Index">Manage ingredients</a></li>
+        <li><a asp-area="" asp-controller="Order" asp-action="OrdersInProgress">Orders in progress</a></li>
+        <li><a asp-area="" asp-controller="Order" asp-action="Index">Order history</a></li>
+    </ul>
+}
+
 <div class="container body-content">
     @RenderBody()
 </div>

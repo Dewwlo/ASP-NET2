@@ -19,6 +19,9 @@
         <th>
             Customer name
         </th>
+        <th>
+            Order complete
+        </th>
         <th></th>
     </tr>
     </thead>
@@ -47,6 +50,18 @@
         {
             <td>
                 No registered user
+            </td>
+        }
+        @if (item.IsComplete)
+        {
+            <td>
+                Yes
+            </td>
+        }
+        else
+        {
+            <td>
+                No
             </td>
         }
         <td>
