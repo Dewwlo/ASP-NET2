@@ -53,6 +53,7 @@ namespace HäggesPizzeria
             services.AddTransient<CartService>();
             services.AddTransient<CategoryService>();
             services.AddTransient<IngredientService>();
+            services.AddTransient<OrderService>();
             services.AddTransient<PaymentService>();
 
             services.AddMvc();
