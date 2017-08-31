@@ -30,6 +30,12 @@ namespace HäggesPizzeria.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> OrdersInProgress()
+        {
+            return View(await _orderService.GetNonCompletedOrdersWithOrderedDishes());
+        }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Details(int id)
         {
             var order = _orderService.GetOrderWithOrderedDishes(id);
@@ -39,6 +45,13 @@ namespace HäggesPizzeria.Controllers
             }
 
             return View(order);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SetOrderComplete(int id)
+        {
+            _orderService.SetOrderComplete(id);
+            return View("OrdersInProgress", await _orderService.GetNonCompletedOrdersWithOrderedDishes());
         }
 
         public async Task<IActionResult> ValidateShippingInformation()

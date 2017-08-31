@@ -24,6 +24,7 @@ namespace HäggesPizzeria.Models
         [Phone]
         public string PhoneNumber { get; set; }
         [Required]
+        public bool IsComplete { get; set; }
         public DateTime OrderDate { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<OrderedDish> OrderedDishes { get; set; }
