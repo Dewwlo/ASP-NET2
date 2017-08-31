@@ -21,7 +21,19 @@ namespace HäggesPizzeria.Services
             _ingredientService = ingredientService;
             _baseDishService = baseDishService;
         }
-        
+
+        public CartDetails GetCartDetails(HttpContext httpContext)
+        {
+            var sessionCart = httpContext.Session.GetString("Cart");
+
+            if (sessionCart != null)
+            {
+                return CalculateCartDetails(GetSessionCartList(httpContext, "Cart"));
+            }
+
+            return new CartDetails();
+        }
+
         public async Task AddDishToCart(HttpContext httpContext, int dishId)
         {
             var sessionCart = httpContext.Session.GetString("Cart");
@@ -99,6 +111,22 @@ namespace HäggesPizzeria.Services
                 Ingredients = baseDish.BaseDishIngredients.Select(bdi => bdi.Ingredient.IngredientId).ToList(),
                 Guid = Guid.NewGuid()
             };
+        }
+
+        private CartDetails CalculateCartDetails(ICollection<OrderedDish> orderedDishes)
+        {
+            var cartDetails = new CartDetails
+            {
+                Items = orderedDishes.Count,
+                TotalPrice = orderedDishes.Sum(od => od.Price),
+                BaseDishesPrice = _context.BaseDishes
+                    .Where(bd => orderedDishes.Any(od => od.BashDishId == bd.BaseDishId))
+                    .Select(bd => bd.Price)
+                    .Sum()
+            };
+            cartDetails.AddedIngredientsPrice = cartDetails.TotalPrice - cartDetails.BaseDishesPrice;
+
+            return cartDetails;
         }
     }
 }
