@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Category</label>
-                <select name="categoryId" asp-for="Category.CategoryId" asp-items="await CategoryService.GetAllCategorySelectOptions()"></select>
+                <select class="form-control" name="categoryId" asp-for="Category.CategoryId" asp-items="await CategoryService.GetAllCategorySelectOptions()"></select>
                 <span asp-validation-for="Category.CategoryId" class="text-danger"></span>
             </div>
             
@@ -36,11 +36,18 @@
             <div class="form-group">
                 @if (Model.Name != null)
                 {
-                    <input type="submit" value="Save changes" class="btn btn-default" />
+                    <button type="submit" class="btn btn-default">
+                        Save changes
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
+
                 }
                 else
                 {
-                    <input type="submit" value="Create new" class="btn btn-default" />
+                    <button type="submit" class="btn btn-default">
+                        Create new
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
                 }
             </div>
         </form>

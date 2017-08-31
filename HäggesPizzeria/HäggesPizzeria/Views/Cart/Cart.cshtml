@@ -43,7 +43,10 @@
     <div class="checkout">
         <div>Total price: @Model.Sum(d => d.Price) kr</div>
         <hr/>
-        <a class="btn btn-success" asp-controller="Order" asp-action="ValidateShippingInformation">Proceed to checkout</a>
+        <a class="btn btn-success" asp-controller="Order" asp-action="ValidateShippingInformation">
+            Proceed to checkout
+            <i class="fa fa-credit-card" aria-hidden="true"></i>
+        </a>
     </div>
 }
 else
