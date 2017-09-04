@@ -1,0 +1,62 @@
+﻿@using System.Collections.Generic
+@model ICollection<Order>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Order date
+        </th>
+        <th>
+            Total price
+        </th>
+        <th>
+            Phone number
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Customer name
+        </th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.OrderDate
+            </td>
+            <td>
+                @item.TotalPrice
+            </td>
+            <td>
+                @item.PhoneNumber
+            </td>
+            <td>
+                @item.Email
+            </td>
+            @if (item.User != null)
+            {
+                <td>
+                    @item.User.CustomerName
+                </td>
+            }
+            else
+            {
+                <td>
+                    No registered user
+                </td>
+            }
+            <td>
+                <a class="btn btn-default" asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+            </td>
+            <td>
+                <a class="btn btn-success" asp-action="SetOrderComplete" asp-route-id="@item.OrderId">Set complete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

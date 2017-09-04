@@ -1,0 +1,40 @@
+﻿@model Ingredient
+
+<form asp-controller="Ingredient" asp-action="SaveIngredient" asp-route-id="@Model.IngredientId">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="IngredientId" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AddExtraPrice" class="control-label"></label>
+        <input asp-for="AddExtraPrice" class="form-control" />
+        <span asp-validation-for="AddExtraPrice" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <div class="checkbox">
+            <label>
+                <input asp-for="IsActive" /> Ingredient will be active
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Name != null)
+        {
+            <button type="submit" class="btn btn-default">
+                Save changes
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+
+        }
+        else
+        {
+            <button type="submit" class="btn btn-default">
+                Create new
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </button>
+        }
+    </div>
+</form>

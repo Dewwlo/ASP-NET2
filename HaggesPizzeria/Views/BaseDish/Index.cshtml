@@ -1,0 +1,63 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model ICollection<BaseDish>
+
+<p>
+    <a class="btn btn-default" onclick="createEditBaseDish()">
+        Create new
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    </a>
+</p>
+<div class="col-md-8">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Dish is active
+            </th>
+            <th>
+                Category
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var dish in Model) {
+            <tr>
+                <td>
+                    @dish.Name
+                </td>
+                <td>
+                    @dish.Price
+                </td>
+                @if (@dish.IsActive)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+                <td>
+                    @dish.Category.Name
+                </td>
+                <td>
+                    <a class="btn btn-default" onclick="createEditBaseDish('@dish.BaseDishId')">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div class="col-md-4" id="create-edit-base-dish">
+    @{
+        Html.RenderPartial("_BaseDishCreateEditPartial", new BaseDish {BaseDishIngredients = new List<BaseDishIngredient>()});
+    }
+</div>

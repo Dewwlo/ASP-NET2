@@ -1,0 +1,31 @@
+﻿@using HaggesPizzeria.Services
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using HaggesPizzeria.Models.IngredientViewModels
+@model OrderedDish
+@inject IngredientService IngredientService
+
+@{
+    ViewData["Title"] = "CartDishDetails";
+}
+
+<div class="col-md-offset-3 col-md-6">
+    <h2 class="text-center">Edit your dish</h2>
+    <h3 class="text-center">@Model.Name</h3>
+    <div id="dish-ingredients">
+        @{
+            Html.RenderPartial("_IngredientPartial", new IngedientDishViewModel
+            {
+                BaseDishId = Model.BaseDishId,
+                Ingredients = IngredientService.GetAllUsedIngredients(Model.Ingredients),
+                IsOrderedDish = true
+            });
+        }
+    </div>
+    <div class="checkout">
+        <a class="btn btn-success" asp-action="SaveDishIngredients" asp-route-guid="@Model.Guid">
+            Save dish
+            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+        </a>
+    </div>
+</div>   
+

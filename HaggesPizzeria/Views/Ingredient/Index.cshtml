@@ -1,0 +1,60 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model ICollection<Ingredient>
+
+<p>
+    <a class="btn btn-default" onclick="createEditIngredient()">
+        Create new
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+    </a>
+</p>
+
+<div class="col-md-6">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Add extra price
+            </th>
+            <th>
+                Ingredient is active
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var ingredient in Model)
+        {
+            <tr>
+                <td>
+                    @ingredient.Name
+                </td>
+                <td>
+                    @ingredient.AddExtraPrice
+                </td>
+                @if (@ingredient.IsActive)
+                {
+                    <td>Yes</td>
+                }
+                else
+                {
+                    <td>No</td>
+                }
+                <td>
+                    <a class="btn btn-default" onclick="createEditIngredient('@ingredient.IngredientId')">Edit</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="col-md-6" id="create-edit-ingredient">
+    @{
+        Html.RenderPartial("_IngredientCreateEditPartial", new Ingredient());
+    }
+</div>
