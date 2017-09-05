@@ -7,6 +7,7 @@ using HaggesPizzeria.Models;
 using Microsoft.AspNetCore.Authorization;
 using HaggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace HaggesPizzeria.Controllers
@@ -16,11 +17,13 @@ namespace HaggesPizzeria.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly BaseDishService _baseDishService;
+        private readonly ILogger<BaseDish> _logger;
 
-        public BaseDishController(ApplicationDbContext context, BaseDishService baseDishService)
+        public BaseDishController(ApplicationDbContext context, BaseDishService baseDishService, ILogger<BaseDish> logger)
         {
             _context = context;
             _baseDishService = baseDishService;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -31,6 +34,8 @@ namespace HaggesPizzeria.Controllers
 
         public async Task<IActionResult> CreateEditBaseDish(int? basedishId)
         {
+            _logger.LogInformation($"Test logging with {basedishId}");
+
             if (basedishId == null)
             {
                 // TODO Find another solution, ugly hack to be able to render view.
