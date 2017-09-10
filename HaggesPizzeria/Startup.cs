@@ -29,7 +29,7 @@ namespace HaggesPizzeria
         {
             if (Environment == Constants.DevelopmentEnvironment)
             {
-                services.AddDbContext<ApplicationDbContext>(options => 
+                services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseInMemoryDatabase("DefaultConnection"));
             }
 

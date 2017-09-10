@@ -12,7 +12,6 @@ namespace HaggesPizzeria.Data
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-
             // Users & Roles
             var adminRole = new IdentityRole { Name = "Admin" };
             var roleResult = roleManager.CreateAsync(adminRole).Result;
@@ -24,7 +23,7 @@ namespace HaggesPizzeria.Data
                 Address = "sjövägen 3",
                 Zipcode = "11320",
                 CustomerName = "Kunden",
-                PhoneNumber = "072030202020"
+                PhoneNumber = "0720302020"
             };
 
             var adminUser = new ApplicationUser
@@ -34,7 +33,7 @@ namespace HaggesPizzeria.Data
                 Address = "sjövägen 3",
                 Zipcode = "11320",
                 CustomerName = "Admin",
-                PhoneNumber = "072030202020"
+                PhoneNumber = "0720302020"
             };
 
             var userResult = userManager.CreateAsync(aUser, "pass").Result;
@@ -59,8 +58,27 @@ namespace HaggesPizzeria.Data
             var pastacarbonara = new BaseDish {Name = "Pasta carbonara", Price = 90, IsActive = true, Category = pasta};
 
             // Orders
-            var order1 = new Order {TotalPrice = 200, User = aUser, OrderDate = DateTime.Now};
-            var order2 = new Order {TotalPrice = 100, OrderDate = DateTime.Now};
+            var order1 = new Order
+            {
+                TotalPrice = 200,
+                User = aUser,
+                OrderDate = DateTime.Now,
+                Address = "Testvägen 3",
+                Email = "Test@gmail.com",
+                PhoneNumber = "23920323223",
+                Zipcode = "12321",
+                IsComplete = true
+            };
+            var order2 = new Order
+            {
+                TotalPrice = 100,
+                OrderDate = DateTime.Now,
+                Address = "Testvägen 3",
+                Email = "Test@gmail.com",
+                PhoneNumber = "23920323223",
+                Zipcode = "12321",
+                IsComplete = false
+            };
 
             var orderedDish1 = new OrderedDish {Name = "Capricciosa", Price = 100, Category = pizza};
             orderedDish1.OrderedDishIngredients = new List<OrderedDishIngredient>
