@@ -30,26 +30,23 @@ namespace HaggesPizzeriaTest
         [TestMethod]
         public async Task TestCompleteCartCalculation()
         {
-            var viewContext = new ViewContext()
-            {
-                HttpContext = new DefaultHttpContext()
-            };
-            viewContext.HttpContext.Session = new TestSession();
+            var httpContext = new DefaultHttpContext {Session = new TestSession()};
+
             var cartService = _serviceProvider.GetService<CartService>();
             var ingredientService = _serviceProvider.GetService<IngredientService>();
 
-            await cartService.AddDishToCart(viewContext.HttpContext, 1);
-            cartService.SetSessionIngredientsList(viewContext.HttpContext, "IngredientsList", new List<Ingredient>());
+            await cartService.AddDishToCart(httpContext, 1);
+            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", new List<Ingredient>());
 
-            var ingredient1 = ingredientService.AddIngredientToList(viewContext.HttpContext, 1);
-            _serviceProvider.GetService<CartService>().SetSessionIngredientsList(viewContext.HttpContext, "IngredientsList", ingredient1);
-            var ingredient2 =  ingredientService.AddIngredientToList(viewContext.HttpContext, 2);
-            _serviceProvider.GetService<CartService>().SetSessionIngredientsList(viewContext.HttpContext, "IngredientsList", ingredient2);
+            var ingredient1 = ingredientService.AddIngredientToList(httpContext, 1);
+            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient1);
+            var ingredient2 =  ingredientService.AddIngredientToList(httpContext, 2);
+            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient2);
 
-            var cart = cartService.GetSessionCartList(viewContext.HttpContext, "Cart");
-            await cartService.SaveDishIngredients(viewContext.HttpContext, cart.FirstOrDefault().Guid);
+            var cart = cartService.GetSessionCartList(httpContext, "Cart");
+            await cartService.SaveDishIngredients(httpContext, cart.FirstOrDefault().Guid);
 
-            var sumCart = cartService.GetSessionCartList(viewContext.HttpContext, "Cart").Sum(od => od.Price);
+            var sumCart = cartService.GetSessionCartList(httpContext, "Cart").Sum(od => od.Price);
 
             Assert.AreEqual(105, sumCart);
         }
