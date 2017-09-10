@@ -65,15 +65,15 @@ namespace HaggesPizzeria.Controllers
         [HttpPost]
         public IActionResult UpdateDishIngredient(int baseDishId, int ingredientId, bool addIngredient, bool isOrderedDish)
         {
-            var ingredientsList = addIngredient
+            var IngredientsList = addIngredient
                 ? _ingredientService.AddIngredientToList(HttpContext, ingredientId)
                 : _ingredientService.RemoveIngredientFromList(HttpContext, ingredientId);
-            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+            HttpContext.Session.SetString(Constants.IngredientsSession, JsonConvert.SerializeObject(IngredientsList));
 
             return PartialView("_IngredientPartial", new IngedientDishViewModel
             {
                 BaseDishId = baseDishId,
-                Ingredients = ingredientsList,
+                Ingredients = IngredientsList,
                 IsOrderedDish = isOrderedDish
             });
         }

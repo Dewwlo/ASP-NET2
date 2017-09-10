@@ -75,7 +75,7 @@ namespace HaggesPizzeria.Controllers
         {
             if (ModelState.IsValid)
             {
-                HttpContext.Session.SetString("OrderInformation", JsonConvert.SerializeObject(order));
+                HttpContext.Session.SetString(Constants.OrderSession, JsonConvert.SerializeObject(order));
                 return RedirectToAction("ValidatePayment");
             }
 
@@ -93,15 +93,15 @@ namespace HaggesPizzeria.Controllers
         {
             if (ModelState.IsValid && _paymentService.ValidatePaymentInformation(payment))
             {
-                var sessionOrder = HttpContext.Session.GetString("OrderInformation");
-                var sessionCart = HttpContext.Session.GetString("Cart");
+                var sessionOrder = HttpContext.Session.GetString(Constants.OrderSession);
+                var sessionCart = HttpContext.Session.GetString(Constants.CartSession);
 
                 if (sessionCart != null && sessionOrder != null)
                 {
                     _orderService.SaveOrder(JsonConvert.DeserializeObject<Order>(sessionOrder));
                     _orderService.SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
-                    HttpContext.Session.Remove("Cart");
-                    HttpContext.Session.Remove("OrderInformation");
+                    HttpContext.Session.Remove(Constants.CartSession);
+                    HttpContext.Session.Remove(Constants.OrderSession);
                 }
 
                 return RedirectToAction("Index", "Home");

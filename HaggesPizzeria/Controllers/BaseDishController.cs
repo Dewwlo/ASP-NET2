@@ -28,7 +28,7 @@ namespace HaggesPizzeria.Controllers
 
         public async Task<IActionResult> Index()
         {
-            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(new List<Ingredient>()));
+            HttpContext.Session.SetString(Constants.IngredientsSession, JsonConvert.SerializeObject(new List<Ingredient>()));
             return View(await _baseDishService.GetAllBaseDishes());
         }
 
@@ -42,8 +42,8 @@ namespace HaggesPizzeria.Controllers
                 return PartialView("_BaseDishCreateEditPartial", new BaseDish { BaseDishIngredients = new List<BaseDishIngredient>() });
             }
 
-            var ingredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == basedishId).Select(i => i.Ingredient).ToList();
-            HttpContext.Session.SetString("IngredientsList", JsonConvert.SerializeObject(ingredientsList));
+            var IngredientsList = _context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == basedishId).Select(i => i.Ingredient).ToList();
+            HttpContext.Session.SetString(Constants.IngredientsSession, JsonConvert.SerializeObject(IngredientsList));
             var baseDish = await _baseDishService.GetBaseDishWithIngredients((int) basedishId);
             return PartialView("_BaseDishCreateEditPartial", baseDish);
         }

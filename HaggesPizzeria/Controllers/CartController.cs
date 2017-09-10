@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using HaggesPizzeria.Models;
 using HaggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace HaggesPizzeria.Controllers
 
             if (_cartService.CartHasItems(HttpContext))
             {
-                return View("Cart", _cartService.GetSessionCartList(HttpContext, "Cart"));
+                return View("Cart", _cartService.GetSessionCartList(HttpContext, Constants.CartSession));
             }
 
             return RedirectToAction("Index", "Home");
@@ -35,11 +36,11 @@ namespace HaggesPizzeria.Controllers
 
         public IActionResult GetAllCartItems()
         {
-            var sessionCart = HttpContext.Session.GetString("Cart");
+            var sessionCart = HttpContext.Session.GetString(Constants.CartSession);
 
             if (sessionCart != null)
             {
-                return View("Cart", _cartService.GetSessionCartList(HttpContext, "Cart"));
+                return View("Cart", _cartService.GetSessionCartList(HttpContext, Constants.CartSession));
             }
 
             return View("Cart");

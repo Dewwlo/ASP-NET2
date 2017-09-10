@@ -51,7 +51,7 @@ namespace HaggesPizzeria.Services
 
         public void SaveIngredientsToDish(HttpContext httpContext)
         {
-            var ingredientsListSession = httpContext.Session.GetString("IngredientsList");
+            var ingredientsListSession = httpContext.Session.GetString(Constants.IngredientsSession);
             var ingredients = (ingredientsListSession != null)
                 ? JsonConvert.DeserializeObject<List<Ingredient>>(ingredientsListSession)
                 : new List<Ingredient>();
@@ -64,7 +64,7 @@ namespace HaggesPizzeria.Services
 
         public void SaveIngredientsToDish(HttpContext httpContext, int baseDishId)
         {
-            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString("IngredientsList"));
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(Constants.IngredientsSession));
             _context.BaseDishIngredients.RemoveRange(_context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDishId));
             _context.SaveChanges();
             _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());

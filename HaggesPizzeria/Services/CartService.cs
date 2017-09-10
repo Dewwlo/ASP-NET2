@@ -24,11 +24,11 @@ namespace HaggesPizzeria.Services
 
         public CartDetails GetCartDetails(HttpContext httpContext)
         {
-            var sessionCart = httpContext.Session.GetString("Cart");
+            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
 
             if (sessionCart != null)
             {
-                return CalculateCartDetails(GetSessionCartList(httpContext, "Cart"));
+                return CalculateCartDetails(GetSessionCartList(httpContext, Constants.CartSession));
             }
 
             return new CartDetails();
@@ -36,47 +36,47 @@ namespace HaggesPizzeria.Services
 
         public async Task AddDishToCart(HttpContext httpContext, int dishId)
         {
-            var sessionCart = httpContext.Session.GetString("Cart");
+            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
             ICollection<OrderedDish> cart = (sessionCart != null)
-                ? GetSessionCartList(httpContext, "Cart")
+                ? GetSessionCartList(httpContext, Constants.CartSession)
                 : new List<OrderedDish>();
 
             cart.Add(CopyBaseDishToOrderedDish(await _baseDishService.GetBaseDishWithIngredients(dishId)));
-            SetSessionCartList(httpContext, "Cart", cart);
+            SetSessionCartList(httpContext, Constants.CartSession, cart);
         }
 
         public void RemoveDishFromCart(HttpContext httpContext, Guid guid)
         {
-            var sessionCart = httpContext.Session.GetString("Cart");
+            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
 
             if (sessionCart != null)
             {
-                var cart = GetSessionCartList(httpContext, "Cart");
+                var cart = GetSessionCartList(httpContext, Constants.CartSession);
                 cart.Remove(cart.SingleOrDefault(d => d.Guid == guid));
-                SetSessionCartList(httpContext, "Cart", cart);
+                SetSessionCartList(httpContext, Constants.CartSession, cart);
             }
         }
 
         public bool CartHasItems(HttpContext httpContext)
         {
-            return httpContext.Session.GetString("Cart").Any();
+            return httpContext.Session.GetString(Constants.CartSession).Any();
         }
 
         public OrderedDish GetDishDetails(HttpContext httpContext, Guid guid)
         {
-            var dish = GetSessionCartList(httpContext, "Cart").SingleOrDefault(c => c.Guid == guid);
-            SetSessionIngredientsList(httpContext, "IngredientsList", _context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId)).ToList());
+            var dish = GetSessionCartList(httpContext, Constants.CartSession).SingleOrDefault(c => c.Guid == guid);
+            SetSessionIngredientsList(httpContext, Constants.IngredientsSession, _context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId)).ToList());
             return dish;
         }
 
         public async Task<ICollection<OrderedDish>> SaveDishIngredients(HttpContext httpContext, Guid guid)
         {
-            var cart = GetSessionCartList(httpContext, "Cart");
+            var cart = GetSessionCartList(httpContext, Constants.CartSession);
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
-            var ingredients = GetSessionIngredientsList(httpContext, "IngredientsList").ToList();
+            var ingredients = GetSessionIngredientsList(httpContext, Constants.IngredientsSession).ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
             dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BaseDishId);
-            SetSessionCartList(httpContext, "Cart", cart);
+            SetSessionCartList(httpContext, Constants.CartSession, cart);
 
             return cart;
         }
