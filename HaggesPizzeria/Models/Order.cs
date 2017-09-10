@@ -12,8 +12,8 @@ namespace HaggesPizzeria.Models
         public int TotalPrice { get; set; }
         [Required]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 3)]
-        [Display(Name = "Delivery adress")]
-        public string Adress { get; set; }
+        [Display(Name = "Delivery address")]
+        public string Address { get; set; }
         [Required]
         [StringLength(5, ErrorMessage = "The {0} must be {2} characters long.", MinimumLength = 5)]
         public string Zipcode { get; set; }

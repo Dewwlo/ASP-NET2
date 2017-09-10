@@ -57,7 +57,7 @@ namespace HaggesPizzeria.Controllers
                 Username = user.UserName,
                 Email = user.Email,
                 CustomerName = user.CustomerName,
-                Adress = user.Adress,
+                Address = user.Address,
                 Zipcode = user.Zipcode,
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
@@ -102,9 +102,9 @@ namespace HaggesPizzeria.Controllers
                 }
             }
 
-            if (model.Adress != user.Adress)
+            if (model.Address != user.Address)
             {
-                user.Adress = model.Adress;
+                user.Address = model.Address;
             }
 
             if (model.Zipcode != user.Zipcode)

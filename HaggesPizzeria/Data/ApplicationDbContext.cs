@@ -11,6 +11,14 @@ namespace HaggesPizzeria.Data
         {
         }
 
+        public DbSet<BaseDish> BaseDishes { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<BaseDishIngredient> BaseDishIngredients { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderedDish> OrderedDishes { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<OrderedDishIngredient> OrderedDishIngredients { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<BaseDishIngredient>()
@@ -38,18 +46,8 @@ namespace HaggesPizzeria.Data
                 .HasOne(odi => odi.Ingredient)
                 .WithMany(i => i.OrderedDishIngredients)
                 .HasForeignKey(odi => odi.IngredientId);
-                
 
             base.OnModelCreating(builder);
-            
         }
-
-        public DbSet<BaseDish> BaseDishes { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<BaseDishIngredient> BaseDishIngredients { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderedDish> OrderedDishes { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<OrderedDishIngredient> OrderedDishIngredients { get; set; }
     }
 }

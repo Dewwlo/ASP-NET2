@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +15,10 @@ namespace HaggesPizzeria
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public string Environment { get; set; }
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
+            Environment = environment.EnvironmentName;
             Configuration = configuration;
         }
 
@@ -23,10 +27,17 @@ namespace HaggesPizzeria
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            if (Environment == Constants.DevelopmentEnvironment)
+            {
+                services.AddDbContext<ApplicationDbContext>(options => 
+                    options.UseInMemoryDatabase("DefaultConnection"));
+            }
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("DefaultConnection"));
+            if (Environment == Constants.ProductionEnvironment)
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -42,9 +53,8 @@ namespace HaggesPizzeria
                 options.Password.RequiredUniqueChars = 3;
             });
 
-            services.AddTransient<UserManager<ApplicationUser>>();
-
             // Add application services.
+            services.AddTransient<UserManager<ApplicationUser>>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddTransient<BaseDishService>();
             services.AddTransient<CartService>();
@@ -68,7 +78,8 @@ namespace HaggesPizzeria
             IHostingEnvironment env,
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IHostingEnvironment environment)
         {
             if (env.IsDevelopment())
             {
@@ -82,9 +93,7 @@ namespace HaggesPizzeria
             }
 
             app.UseStaticFiles();
-
             app.UseAuthentication();
-
             app.UseSession();
             app.UseMvc(routes =>
             {
@@ -93,7 +102,15 @@ namespace HaggesPizzeria
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            DbInitializer.Initialize(context, userManager, roleManager);
+            if (environment.EnvironmentName == Constants.ProductionEnvironment)
+            {
+                context.Database.Migrate();
+            }
+
+            if (!context.Users.Any())
+            {
+                DbInitializer.Initialize(context, userManager, roleManager);
+            }
         }
     }
 }
