@@ -222,7 +222,7 @@ namespace HaggesPizzeria.Controllers
                     Email = model.Email,
                     CustomerName = model.CustomerName,
                     PhoneNumber = model.PhoneNumber,
-                    Adress = model.Adress,
+                    Address = model.Address,
                     Zipcode = model.Zipecode
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);

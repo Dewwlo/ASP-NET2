@@ -61,7 +61,7 @@ namespace HaggesPizzeria.Controllers
             if (user != null)
             {
                 order.Email = user.Email;
-                order.Adress = user.Adress;
+                order.Address = user.Address;
                 order.Zipcode = user.Zipcode;
                 order.PhoneNumber = user.PhoneNumber;
             }
@@ -71,7 +71,7 @@ namespace HaggesPizzeria.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ValidateShippingInformation([Bind("Email,Adress,PhoneNumber,Zipcode")] Order order)
+        public IActionResult ValidateShippingInformation([Bind("Email,Address,PhoneNumber,Zipcode")] Order order)
         {
             if (ModelState.IsValid)
             {

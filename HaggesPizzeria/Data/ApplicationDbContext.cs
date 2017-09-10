@@ -38,10 +38,8 @@ namespace HaggesPizzeria.Data
                 .HasOne(odi => odi.Ingredient)
                 .WithMany(i => i.OrderedDishIngredients)
                 .HasForeignKey(odi => odi.IngredientId);
-                
 
             base.OnModelCreating(builder);
-            
         }
 
         public DbSet<BaseDish> BaseDishes { get; set; }
