@@ -27,11 +27,7 @@ namespace HaggesPizzeriaTest
                 .AddTransient<IngredientService>()
                 .AddTransient<OrderService>()
                 .AddTransient<PaymentService>()
-                .AddTransient(typeof(ISession), serviceProvider =>
-                {
-                    var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
-                    return httpContextAccessor.HttpContext.Session;
-                })
+                .AddTransient(typeof(ISession), serviceProvider => new TestSession())
                 .AddSession()
                 .AddMvc();
 

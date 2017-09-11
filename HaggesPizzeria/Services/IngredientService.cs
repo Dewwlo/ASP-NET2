@@ -21,6 +21,11 @@ namespace HaggesPizzeria.Services
             _session = session;
         }
 
+        public ICollection<Ingredient> GetAllIngredients()
+        {
+            return _context.Ingredients.ToList();
+        }
+        
         public ICollection<Ingredient> GetAllUnusedIngredients(ICollection<Ingredient> usedIngredients)
         {
             return _context.Ingredients.Where(i => usedIngredients.All(ui => ui.IngredientId != i.IngredientId) && i.IsActive).OrderBy(i => i.Name).ToList();
