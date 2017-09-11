@@ -27,10 +27,11 @@ namespace HaggesPizzeria.Services
 
         public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredients()
         {
-            return await _context.BaseDishes.Where(bd => bd.IsActive)
+            var baseDishes = await _context.BaseDishes.Where(bd => bd.IsActive)
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
                 .ToListAsync();
+            return FilterOutDishesWithInactiveIngredients(baseDishes);
         }
 
         public async Task<BaseDish> GetBaseDishWithIngredients(int id)
@@ -44,11 +45,12 @@ namespace HaggesPizzeria.Services
 
         public async Task<ICollection<BaseDish>> GetAllActiveBaseDishesWithIngredientsByCategory(int categoryId)
         {
-            return await _context.BaseDishes
+            var baseDishes = await _context.BaseDishes
                 .Where(bd => bd.IsActive && bd.Category.CategoryId == categoryId)
                 .Include(d => d.BaseDishIngredients)
                 .ThenInclude(di => di.Ingredient)
                 .ToListAsync();
+            return FilterOutDishesWithInactiveIngredients(baseDishes);
         }
 
         public void SaveIngredientsToDish()
@@ -71,6 +73,11 @@ namespace HaggesPizzeria.Services
             _context.SaveChanges();
             _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());
             _context.SaveChanges();
+        }
+
+        public List<BaseDish> FilterOutDishesWithInactiveIngredients(List<BaseDish> baseDishes)
+        {
+            return baseDishes.Where(bd => bd.BaseDishIngredients.All(bdi => bdi.Ingredient.IsActive)).ToList();
         }
     }
 }
