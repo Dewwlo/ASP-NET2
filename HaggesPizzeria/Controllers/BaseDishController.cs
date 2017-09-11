@@ -61,13 +61,13 @@ namespace HaggesPizzeria.Controllers
                 {
                     _context.Update(baseDish);
                     await _context.SaveChangesAsync();
-                    _baseDishService.SaveIngredientsToDish(HttpContext.Session, baseDish.BaseDishId);
+                    _baseDishService.SaveIngredientsToDish(baseDish.BaseDishId);
                 }
                 else
                 {
                     _context.Add(baseDish);
                     await _context.SaveChangesAsync();
-                    _baseDishService.SaveIngredientsToDish(HttpContext.Session);
+                    _baseDishService.SaveIngredientsToDish();
                 }
                 return RedirectToAction(nameof(Index));
             }

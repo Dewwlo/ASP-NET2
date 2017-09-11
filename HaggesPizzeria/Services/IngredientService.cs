@@ -12,11 +12,13 @@ namespace HaggesPizzeria.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly BaseDishService _baseDishService;
+        private readonly ISession _session;
 
-        public IngredientService(ApplicationDbContext context, BaseDishService baseDishService)
+        public IngredientService(ApplicationDbContext context, BaseDishService baseDishService, ISession session)
         {
             _context = context;
             _baseDishService = baseDishService;
+            _session = session;
         }
 
         public ICollection<Ingredient> GetAllUnusedIngredients(ICollection<Ingredient> usedIngredients)
@@ -48,16 +50,16 @@ namespace HaggesPizzeria.Services
             return baseDish.BaseDishIngredients.All(bdi => bdi.Ingredient != ingredient);
         }
 
-        public ICollection<Ingredient> AddIngredientToList(ISession session, int ingredientId)
+        public ICollection<Ingredient> AddIngredientToList(int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(_session.GetString(Constants.IngredientsSession));
             IngredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
             return IngredientsList;
         }
 
-        public ICollection<Ingredient> RemoveIngredientFromList(ISession session, int ingredientId)
+        public ICollection<Ingredient> RemoveIngredientFromList(int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(_session.GetString(Constants.IngredientsSession));
             IngredientsList.Remove(IngredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
             return IngredientsList;
         }

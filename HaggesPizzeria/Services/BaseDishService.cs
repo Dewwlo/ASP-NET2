@@ -12,10 +12,12 @@ namespace HaggesPizzeria.Services
     public class BaseDishService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ISession _session;
 
-        public BaseDishService(ApplicationDbContext context)
+        public BaseDishService(ApplicationDbContext context, ISession session)
         {
             _context = context;
+            _session = session;
         }
 
         public async Task<ICollection<BaseDish>> GetAllBaseDishes()
@@ -49,9 +51,9 @@ namespace HaggesPizzeria.Services
                 .ToListAsync();
         }
 
-        public void SaveIngredientsToDish(ISession session)
+        public void SaveIngredientsToDish()
         {
-            var ingredientsListSession = session.GetString(Constants.IngredientsSession);
+            var ingredientsListSession = _session.GetString(Constants.IngredientsSession);
             var ingredients = (ingredientsListSession != null)
                 ? JsonConvert.DeserializeObject<List<Ingredient>>(ingredientsListSession)
                 : new List<Ingredient>();
@@ -62,9 +64,9 @@ namespace HaggesPizzeria.Services
         }
 
 
-        public void SaveIngredientsToDish(ISession session, int baseDishId)
+        public void SaveIngredientsToDish(int baseDishId)
         {
-            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(Constants.IngredientsSession));
+            List<Ingredient> ingredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(_session.GetString(Constants.IngredientsSession));
             _context.BaseDishIngredients.RemoveRange(_context.BaseDishIngredients.Where(bdi => bdi.BaseDishId == baseDishId));
             _context.SaveChanges();
             _context.BaseDishIngredients.AddRange(ingredientsList.Select(il => new BaseDishIngredient { BaseDishId = baseDishId, IngredientId = il.IngredientId }).ToList());

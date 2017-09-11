@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using HaggesPizzeria.Data;
 using HaggesPizzeria.Models;
 using HaggesPizzeria.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace HaggesPizzeria
 {
@@ -62,6 +63,11 @@ namespace HaggesPizzeria
             services.AddTransient<IngredientService>();
             services.AddTransient<OrderService>();
             services.AddTransient<PaymentService>();
+            services.AddTransient(typeof(ISession), serviceProvider =>
+            {
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+                return httpContextAccessor.HttpContext.Session;
+            });
 
             services.AddMvc();
 

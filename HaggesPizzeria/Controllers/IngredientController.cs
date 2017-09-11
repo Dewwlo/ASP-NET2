@@ -66,8 +66,8 @@ namespace HaggesPizzeria.Controllers
         public IActionResult UpdateDishIngredient(int baseDishId, int ingredientId, bool addIngredient, bool isOrderedDish)
         {
             var IngredientsList = addIngredient
-                ? _ingredientService.AddIngredientToList(HttpContext.Session, ingredientId)
-                : _ingredientService.RemoveIngredientFromList(HttpContext.Session, ingredientId);
+                ? _ingredientService.AddIngredientToList(ingredientId)
+                : _ingredientService.RemoveIngredientFromList(ingredientId);
             HttpContext.Session.SetString(Constants.IngredientsSession, JsonConvert.SerializeObject(IngredientsList));
 
             return PartialView("_IngredientPartial", new IngedientDishViewModel
