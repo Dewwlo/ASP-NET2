@@ -18,17 +18,17 @@ namespace HaggesPizzeria.Controllers
 
         public async Task<IActionResult> AddDishToCart(int dishId)
         {
-            await _cartService.AddDishToCart(HttpContext, dishId);
+            await _cartService.AddDishToCart(HttpContext.Session, dishId);
             return RedirectToAction("Index", "Home");
         }
 
         public IActionResult RemoveDishFromCart(Guid guid)
         {
-            _cartService.RemoveDishFromCart(HttpContext, guid);
+            _cartService.RemoveDishFromCart(HttpContext.Session, guid);
 
-            if (_cartService.CartHasItems(HttpContext))
+            if (_cartService.CartHasItems(HttpContext.Session))
             {
-                return View("Cart", _cartService.GetSessionCartList(HttpContext, Constants.CartSession));
+                return View("Cart", _cartService.GetSessionCartList(HttpContext.Session, Constants.CartSession));
             }
 
             return RedirectToAction("Index", "Home");
@@ -40,7 +40,7 @@ namespace HaggesPizzeria.Controllers
 
             if (sessionCart != null)
             {
-                return View("Cart", _cartService.GetSessionCartList(HttpContext, Constants.CartSession));
+                return View("Cart", _cartService.GetSessionCartList(HttpContext.Session, Constants.CartSession));
             }
 
             return View("Cart");
@@ -48,12 +48,12 @@ namespace HaggesPizzeria.Controllers
 
         public IActionResult DishDetails(Guid guid)
         {
-            return View("CartDishDetails", _cartService.GetDishDetails(HttpContext, guid));
+            return View("CartDishDetails", _cartService.GetDishDetails(HttpContext.Session, guid));
         }
 
         public async Task<IActionResult> SaveDishIngredients(Guid guid)
         {
-            return View("Cart", await _cartService.SaveDishIngredients(HttpContext, guid));
+            return View("Cart", await _cartService.SaveDishIngredients(HttpContext.Session, guid));
         }
     }
 }

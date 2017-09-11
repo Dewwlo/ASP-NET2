@@ -30,23 +30,22 @@ namespace HaggesPizzeriaTest
         [TestMethod]
         public async Task TestCompleteCartCalculation()
         {
-            var httpContext = new DefaultHttpContext {Session = new TestSession()};
-
+            var session = _serviceProvider.GetService<ISession>();
             var cartService = _serviceProvider.GetService<CartService>();
             var ingredientService = _serviceProvider.GetService<IngredientService>();
 
-            await cartService.AddDishToCart(httpContext, 1);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", new List<Ingredient>());
+            await cartService.AddDishToCart(session, 1);
+            cartService.SetSessionIngredientsList(session, Constants.IngredientsSession, new List<Ingredient>());
 
-            var ingredient1 = ingredientService.AddIngredientToList(httpContext, 1);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient1);
-            var ingredient2 =  ingredientService.AddIngredientToList(httpContext, 2);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient2);
+            var ingredient1 = ingredientService.AddIngredientToList(session, 1);
+            cartService.SetSessionIngredientsList(session, Constants.IngredientsSession, ingredient1);
+            var ingredient2 =  ingredientService.AddIngredientToList(session, 2);
+            cartService.SetSessionIngredientsList(session, Constants.IngredientsSession, ingredient2);
 
-            var cart = cartService.GetSessionCartList(httpContext, "Cart");
-            await cartService.SaveDishIngredients(httpContext, cart.FirstOrDefault().Guid);
+            var cart = cartService.GetSessionCartList(session, Constants.CartSession);
+            await cartService.SaveDishIngredients(session, cart.FirstOrDefault().Guid);
 
-            var sumCart = cartService.GetSessionCartList(httpContext, "Cart").Sum(od => od.Price);
+            var sumCart = cartService.GetSessionCartList(session, Constants.CartSession).Sum(od => od.Price);
 
             Assert.AreEqual(105, sumCart);
         }

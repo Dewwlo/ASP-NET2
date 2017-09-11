@@ -15,7 +15,7 @@ namespace HaggesPizzeria.ViewComponents
 
         public IViewComponentResult Invoke(CartDetails cartDetails)
         {
-            return View(_cartService.GetCartDetails(HttpContext));
+            return View(_cartService.GetCartDetails(HttpContext.Session));
         }
     }
 }

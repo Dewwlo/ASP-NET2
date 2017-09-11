@@ -22,83 +22,83 @@ namespace HaggesPizzeria.Services
             _baseDishService = baseDishService;
         }
 
-        public CartDetails GetCartDetails(HttpContext httpContext)
+        public CartDetails GetCartDetails(ISession session)
         {
-            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
+            var sessionCart = session.GetString(Constants.CartSession);
 
             if (sessionCart != null)
             {
-                return CalculateCartDetails(GetSessionCartList(httpContext, Constants.CartSession));
+                return CalculateCartDetails(GetSessionCartList(session, Constants.CartSession));
             }
 
             return new CartDetails();
         }
 
-        public async Task AddDishToCart(HttpContext httpContext, int dishId)
+        public async Task AddDishToCart(ISession session, int dishId)
         {
-            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
+            var sessionCart = session.GetString(Constants.CartSession);
             ICollection<OrderedDish> cart = (sessionCart != null)
-                ? GetSessionCartList(httpContext, Constants.CartSession)
+                ? GetSessionCartList(session, Constants.CartSession)
                 : new List<OrderedDish>();
 
             cart.Add(CopyBaseDishToOrderedDish(await _baseDishService.GetBaseDishWithIngredients(dishId)));
-            SetSessionCartList(httpContext, Constants.CartSession, cart);
+            SetSessionCartList(session, Constants.CartSession, cart);
         }
 
-        public void RemoveDishFromCart(HttpContext httpContext, Guid guid)
+        public void RemoveDishFromCart(ISession session, Guid guid)
         {
-            var sessionCart = httpContext.Session.GetString(Constants.CartSession);
+            var sessionCart = session.GetString(Constants.CartSession);
 
             if (sessionCart != null)
             {
-                var cart = GetSessionCartList(httpContext, Constants.CartSession);
+                var cart = GetSessionCartList(session, Constants.CartSession);
                 cart.Remove(cart.SingleOrDefault(d => d.Guid == guid));
-                SetSessionCartList(httpContext, Constants.CartSession, cart);
+                SetSessionCartList(session, Constants.CartSession, cart);
             }
         }
 
-        public bool CartHasItems(HttpContext httpContext)
+        public bool CartHasItems(ISession session)
         {
-            return httpContext.Session.GetString(Constants.CartSession).Any();
+            return session.GetString(Constants.CartSession).Any();
         }
 
-        public OrderedDish GetDishDetails(HttpContext httpContext, Guid guid)
+        public OrderedDish GetDishDetails(ISession session, Guid guid)
         {
-            var dish = GetSessionCartList(httpContext, Constants.CartSession).SingleOrDefault(c => c.Guid == guid);
-            SetSessionIngredientsList(httpContext, Constants.IngredientsSession, _context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId)).ToList());
+            var dish = GetSessionCartList(session, Constants.CartSession).SingleOrDefault(c => c.Guid == guid);
+            SetSessionIngredientsList(session, Constants.IngredientsSession, _context.Ingredients.Where(i => dish.Ingredients.Any(di => di == i.IngredientId)).ToList());
             return dish;
         }
 
-        public async Task<ICollection<OrderedDish>> SaveDishIngredients(HttpContext httpContext, Guid guid)
+        public async Task<ICollection<OrderedDish>> SaveDishIngredients(ISession session, Guid guid)
         {
-            var cart = GetSessionCartList(httpContext, Constants.CartSession);
+            var cart = GetSessionCartList(session, Constants.CartSession);
             var dish = cart.FirstOrDefault(d => d.Guid == guid);
-            var ingredients = GetSessionIngredientsList(httpContext, Constants.IngredientsSession).ToList();
+            var ingredients = GetSessionIngredientsList(session, Constants.IngredientsSession).ToList();
             dish.Ingredients = ingredients.Select(i => i.IngredientId).ToList();
             dish.Price = await _ingredientService.CalculateDishPrice(ingredients, dish.BaseDishId);
-            SetSessionCartList(httpContext, Constants.CartSession, cart);
+            SetSessionCartList(session, Constants.CartSession, cart);
 
             return cart;
         }
 
-        public ICollection<OrderedDish> GetSessionCartList(HttpContext httpContext, string sessionName)
+        public ICollection<OrderedDish> GetSessionCartList(ISession session, string sessionName)
         {
-            return JsonConvert.DeserializeObject<List<OrderedDish>>(httpContext.Session.GetString(sessionName));
+            return JsonConvert.DeserializeObject<List<OrderedDish>>(session.GetString(sessionName));
         }
 
-        public ICollection<Ingredient> GetSessionIngredientsList(HttpContext httpContext, string sessionName)
+        public ICollection<Ingredient> GetSessionIngredientsList(ISession session, string sessionName)
         {
-            return JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(sessionName));
+            return JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(sessionName));
         }
 
-        public void SetSessionCartList(HttpContext httpContext, string sessionName, ICollection<OrderedDish> list)
+        public void SetSessionCartList(ISession session, string sessionName, ICollection<OrderedDish> list)
         {
-            httpContext.Session.SetString(sessionName, JsonConvert.SerializeObject(list));
+            session.SetString(sessionName, JsonConvert.SerializeObject(list));
         }
 
-        public void SetSessionIngredientsList(HttpContext httpContext ,string sessionName, ICollection<Ingredient> list)
+        public void SetSessionIngredientsList(ISession session ,string sessionName, ICollection<Ingredient> list)
         {
-            httpContext.Session.SetString(sessionName, JsonConvert.SerializeObject(list));
+            session.SetString(sessionName, JsonConvert.SerializeObject(list));
         }
 
         private OrderedDish CopyBaseDishToOrderedDish(BaseDish baseDish)

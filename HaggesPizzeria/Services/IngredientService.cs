@@ -48,16 +48,16 @@ namespace HaggesPizzeria.Services
             return baseDish.BaseDishIngredients.All(bdi => bdi.Ingredient != ingredient);
         }
 
-        public ICollection<Ingredient> AddIngredientToList(HttpContext httpContext, int ingredientId)
+        public ICollection<Ingredient> AddIngredientToList(ISession session, int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(Constants.IngredientsSession));
             IngredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
             return IngredientsList;
         }
 
-        public ICollection<Ingredient> RemoveIngredientFromList(HttpContext httpContext, int ingredientId)
+        public ICollection<Ingredient> RemoveIngredientFromList(ISession session, int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(session.GetString(Constants.IngredientsSession));
             IngredientsList.Remove(IngredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
             return IngredientsList;
         }
