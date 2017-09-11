@@ -23,6 +23,7 @@ namespace HaggesPizzeriaTest
             context.Ingredients.Add(new Ingredient {Name = "BBB", AddExtraPrice = 10});
             context.Ingredients.Add(new Ingredient { Name = "CCC", AddExtraPrice = 5 });
             context.BaseDishes.Add(new BaseDish {Name = "Test", Price = 90});
+            context.BaseDishes.Add(new BaseDish { Name = "Test2", Price = 100 });
             context.BaseDishIngredients.Add(new BaseDishIngredient {IngredientId = 3, BaseDishId = 1});
             context.SaveChanges();
         }
@@ -30,25 +31,29 @@ namespace HaggesPizzeriaTest
         [TestMethod]
         public async Task TestCompleteCartCalculation()
         {
-            var httpContext = new DefaultHttpContext {Session = new TestSession()};
-
             var cartService = _serviceProvider.GetService<CartService>();
             var ingredientService = _serviceProvider.GetService<IngredientService>();
 
-            await cartService.AddDishToCart(httpContext, 1);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", new List<Ingredient>());
+            await cartService.AddDishToCart(1);
+            await cartService.AddDishToCart(2);
+            cartService.SetSessionIngredientsList(Constants.IngredientsSession, new List<Ingredient>());
 
-            var ingredient1 = ingredientService.AddIngredientToList(httpContext, 1);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient1);
-            var ingredient2 =  ingredientService.AddIngredientToList(httpContext, 2);
-            cartService.SetSessionIngredientsList(httpContext, "IngredientsList", ingredient2);
+            //TODO Fix: Session variables set will only be active in the sevice in which they are initiated.
 
-            var cart = cartService.GetSessionCartList(httpContext, "Cart");
-            await cartService.SaveDishIngredients(httpContext, cart.FirstOrDefault().Guid);
+            //var ingredient1 = ingredientService.AddIngredientToList(1);
+            //cartService.SetSessionIngredientsList(Constants.IngredientsSession, ingredient1);
+            //var ingredient2 = ingredientService.AddIngredientToList(2);
 
-            var sumCart = cartService.GetSessionCartList(httpContext, "Cart").Sum(od => od.Price);
+            cartService.SetSessionIngredientsList(
+                Constants.IngredientsSession, 
+                ingredientService.GetAllIngredients().Take(2).ToList());
+            var cart = cartService.GetSessionCartList(Constants.CartSession);
+            await cartService.SaveDishIngredients(cart.FirstOrDefault().Guid);
 
-            Assert.AreEqual(105, sumCart);
+            var sumCart = cartService.GetSessionCartList(Constants.CartSession).Sum(od => od.Price);
+
+            Assert.AreEqual(205, sumCart);
+            Assert.AreEqual(2, cart.Count);
         }
     }
 }

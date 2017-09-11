@@ -12,13 +12,20 @@ namespace HaggesPizzeria.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly BaseDishService _baseDishService;
+        private readonly ISession _session;
 
-        public IngredientService(ApplicationDbContext context, BaseDishService baseDishService)
+        public IngredientService(ApplicationDbContext context, BaseDishService baseDishService, ISession session)
         {
             _context = context;
             _baseDishService = baseDishService;
+            _session = session;
         }
 
+        public ICollection<Ingredient> GetAllIngredients()
+        {
+            return _context.Ingredients.ToList();
+        }
+        
         public ICollection<Ingredient> GetAllUnusedIngredients(ICollection<Ingredient> usedIngredients)
         {
             return _context.Ingredients.Where(i => usedIngredients.All(ui => ui.IngredientId != i.IngredientId) && i.IsActive).OrderBy(i => i.Name).ToList();
@@ -48,16 +55,16 @@ namespace HaggesPizzeria.Services
             return baseDish.BaseDishIngredients.All(bdi => bdi.Ingredient != ingredient);
         }
 
-        public ICollection<Ingredient> AddIngredientToList(HttpContext httpContext, int ingredientId)
+        public ICollection<Ingredient> AddIngredientToList(int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(_session.GetString(Constants.IngredientsSession));
             IngredientsList.Add(_context.Ingredients.SingleOrDefault(i => i.IngredientId == ingredientId));
             return IngredientsList;
         }
 
-        public ICollection<Ingredient> RemoveIngredientFromList(HttpContext httpContext, int ingredientId)
+        public ICollection<Ingredient> RemoveIngredientFromList(int ingredientId)
         {
-            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(httpContext.Session.GetString(Constants.IngredientsSession));
+            List<Ingredient> IngredientsList = JsonConvert.DeserializeObject<List<Ingredient>>(_session.GetString(Constants.IngredientsSession));
             IngredientsList.Remove(IngredientsList.SingleOrDefault(il => il.IngredientId == ingredientId));
             return IngredientsList;
         }

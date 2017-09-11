@@ -1,6 +1,7 @@
 ﻿using System;
 using HaggesPizzeria.Data;
 using HaggesPizzeria.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
@@ -26,6 +27,7 @@ namespace HaggesPizzeriaTest
                 .AddTransient<IngredientService>()
                 .AddTransient<OrderService>()
                 .AddTransient<PaymentService>()
+                .AddTransient(typeof(ISession), serviceProvider => new TestSession())
                 .AddSession()
                 .AddMvc();
 
