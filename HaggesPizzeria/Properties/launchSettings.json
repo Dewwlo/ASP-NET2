@@ -8,29 +8,21 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "https://localhost:44338/",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "HaggesPizzeria": {
+    "LocalDevelopment": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:52424/"
+      "applicationUrl": "http://127.0.0.1:52424/"
     },
-    "LocalProductionTest": {
+    "LocalStaging": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       },
-      "applicationUrl": "http://localhost:52424/"
+      "applicationUrl": "http://127.0.0.1:52424/"
     }
   }
 }

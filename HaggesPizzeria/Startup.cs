@@ -28,16 +28,25 @@ namespace HaggesPizzeria
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (Environment == Constants.DevelopmentEnvironment)
-            {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("DefaultConnection"));
-            }
 
-            if (Environment == Constants.ProductionEnvironment)
+            switch (Environment)
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("AzureConnection")));
+                case Constants.DevelopmentEnvironment:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseInMemoryDatabase("DefaultConnection"));
+                    break;
+                case Constants.StagingEnvironment:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("LocalStagingConnection")));
+                    break;
+                case Constants.ProductionEnvironment:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("AzureConnection")));
+                    break;
+                default:
+                    services.AddDbContext<ApplicationDbContext>(options =>
+                        options.UseInMemoryDatabase("DefaultConnection"));
+                    break;
             }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -108,7 +117,8 @@ namespace HaggesPizzeria
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            if (environment.EnvironmentName == Constants.ProductionEnvironment)
+            if (environment.EnvironmentName == Constants.ProductionEnvironment ||
+                environment.EnvironmentName == Constants.StagingEnvironment)
             {
                 context.Database.Migrate();
             }
