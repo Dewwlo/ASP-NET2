@@ -38,15 +38,11 @@ namespace HaggesPizzeriaTest
             await cartService.AddDishToCart(2);
             cartService.SetSessionIngredientsList(Constants.IngredientsSession, new List<Ingredient>());
 
-            //TODO Fix: Session variables set will only be active in the sevice in which they are initiated.
-
-            //var ingredient1 = ingredientService.AddIngredientToList(1);
-            //cartService.SetSessionIngredientsList(Constants.IngredientsSession, ingredient1);
-            //var ingredient2 = ingredientService.AddIngredientToList(2);
-
-            cartService.SetSessionIngredientsList(
-                Constants.IngredientsSession, 
-                ingredientService.GetAllIngredients().Take(2).ToList());
+            var ingredient1 = ingredientService.AddIngredientToList(1);
+            cartService.SetSessionIngredientsList(Constants.IngredientsSession, ingredient1);
+            var ingredient2 = ingredientService.AddIngredientToList(2);
+            cartService.SetSessionIngredientsList(Constants.IngredientsSession, ingredient2);
+            
             var cart = cartService.GetSessionCartList(Constants.CartSession);
             await cartService.SaveDishIngredients(cart.FirstOrDefault().Guid);
 

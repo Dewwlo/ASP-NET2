@@ -11,6 +11,7 @@ using HaggesPizzeria.Data;
 using HaggesPizzeria.Models;
 using HaggesPizzeria.Services;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace HaggesPizzeria
 {
@@ -20,7 +21,9 @@ namespace HaggesPizzeria
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Environment = environment.EnvironmentName;
-            Configuration = configuration;
+            Configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile($"appsettings.{Environment}.json").Build();
         }
 
         public IConfiguration Configuration { get; }
