@@ -48,6 +48,7 @@ namespace HaggesPizzeria.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public async Task<IActionResult> SetOrderComplete(int id)
         {
             _orderService.SetOrderComplete(id);
