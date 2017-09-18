@@ -40,11 +40,11 @@ namespace HaggesPizzeria
                     break;
                 case Constants.StagingEnvironment:
                     services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("LocalStagingConnection")));
+                        options.UseSqlServer(Configuration.GetConnectionString("PizzaDatabase")));
                     break;
                 case Constants.ProductionEnvironment:
                     services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("AzureConnection")));
+                        options.UseSqlServer(Configuration.GetConnectionString("PizzaDatabase")));
                     break;
                 default:
                     services.AddDbContext<ApplicationDbContext>(options =>
