@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using HaggesPizzeria.Data;
 using HaggesPizzeria.Models;
 using HaggesPizzeria.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,7 +27,7 @@ namespace HaggesPizzeriaTest
         }
         
         [TestMethod]
-        public async Task TestCompleteCartCalculation()
+        public async Task CompleteCartCalculationIntegrationTest()
         {
             var cartService = _serviceProvider.GetService<CartService>();
             var ingredientService = _serviceProvider.GetService<IngredientService>();
@@ -50,6 +48,48 @@ namespace HaggesPizzeriaTest
 
             Assert.AreEqual(205, sumCart);
             Assert.AreEqual(2, cart.Count);
+        }
+
+        [TestMethod]
+        public async Task CompleteCartCalculationUnitTest()
+        {
+            var cartService = _serviceProvider.GetService<CartService>();
+
+            cartService.AddDishToCart(new BaseDish {Name = "Test1", Price = 90, BaseDishId = 1, BaseDishIngredients = new List<BaseDishIngredient>()});
+            cartService.AddDishToCart(new BaseDish {Name = "Test2", Price = 100, BaseDishId = 2, BaseDishIngredients = new List<BaseDishIngredient>()});
+
+            cartService.SetSessionIngredientsList(Constants.IngredientsSession, 
+                new List<Ingredient>
+                {
+                    new Ingredient{AddExtraPrice = 5},
+                    new Ingredient{AddExtraPrice = 10}
+                });
+
+            var cart = cartService.GetSessionCartList(Constants.CartSession);
+            await cartService.SaveDishIngredients(cart.FirstOrDefault().Guid);
+
+            var sumCart = cartService.GetSessionCartList(Constants.CartSession).Sum(od => od.Price);
+
+            Assert.AreEqual(205, sumCart);
+            Assert.AreEqual(2, cart.Count);
+        }
+
+        [TestMethod]
+        public void CalculateCartDetailsIntergrationTest()
+        {
+            var cartService = _serviceProvider.GetService<CartService>();
+
+            var orderedDishes = new List<OrderedDish>
+            {
+                new OrderedDish { Name = "Test1", Price = 100 , BaseDishId = 1 },
+                new OrderedDish { Name = "Test2", Price = 110 , BaseDishId = 2 }
+            };
+            cartService.SetSessionCartList(Constants.CartSession, orderedDishes);
+            var cartDetails = cartService.GetCartDetails();
+
+            Assert.AreEqual(210, cartDetails.TotalPrice);
+            Assert.AreEqual(2, cartDetails.Items);
+            Assert.AreEqual(20, cartDetails.AddedIngredientsPrice);
         }
     }
 }

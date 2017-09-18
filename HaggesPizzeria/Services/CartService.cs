@@ -51,6 +51,17 @@ namespace HaggesPizzeria.Services
             SetSessionCartList(Constants.CartSession, cart);
         }
 
+        public void AddDishToCart(BaseDish baseDish)
+        {
+            var sessionCart = _session.GetString(Constants.CartSession);
+            ICollection<OrderedDish> cart = (sessionCart != null)
+                ? GetSessionCartList(Constants.CartSession)
+                : new List<OrderedDish>();
+
+            cart.Add(CopyBaseDishToOrderedDish(baseDish));
+            SetSessionCartList(Constants.CartSession, cart);
+        }
+
         public void RemoveDishFromCart(Guid guid)
         {
             var sessionCart = _session.GetString(Constants.CartSession);
