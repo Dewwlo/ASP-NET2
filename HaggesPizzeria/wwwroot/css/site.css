@@ -71,3 +71,7 @@
 .sidenav {
     float: right;
 }
+
+.payment-button {
+    margin-top: 25px;
+}

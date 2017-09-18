@@ -103,10 +103,13 @@ namespace HaggesPizzeria.Controllers
                     _orderService.SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
                     HttpContext.Session.Remove(Constants.CartSession);
                     HttpContext.Session.Remove(Constants.OrderSession);
+
+                    return RedirectToAction("Index", "Home");
                 }
 
-                return RedirectToAction("Index", "Home");
+                return View("Payment");
             }
+            ModelState.AddModelError("Error", "Not a valid credit card");
 
             return View("Payment");
         }
