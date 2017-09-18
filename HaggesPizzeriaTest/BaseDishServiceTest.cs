@@ -12,18 +12,35 @@ namespace HaggesPizzeriaTest
     [TestClass]
     public class BaseDishServiceTest : BaseTests
     {
-        public override void InitializeDatabase()
-        {
-            base.InitializeDatabase();
-        }
-
         [TestMethod]
-        public async Task TestBaseDishesList()
+        public async Task FilterDishesUnitTest()
         {
-            var testBaseDishes = await _serviceProvider.GetService<BaseDishService>().GetAllBaseDishes();
-            var mockBaseDishes = Mock.Of<List<BaseDish>>();
+            var ingredient1 = new Ingredient { IngredientId = 1, IsActive = true };
+            var ingredient2 = new Ingredient { IngredientId = 2, IsActive = false };
 
-            CollectionAssert.AreEqual(mockBaseDishes, testBaseDishes.ToList());
+            var baseDishes = new List<BaseDish>
+            {
+                new BaseDish
+                {
+                    BaseDishId = 1,
+                    BaseDishIngredients = new List<BaseDishIngredient>
+                    {
+                        new BaseDishIngredient { BaseDishId = 1, IngredientId = 1, Ingredient = ingredient1 }
+                    }
+                },
+                new BaseDish
+                {
+                    BaseDishId = 2,
+                    BaseDishIngredients = new List<BaseDishIngredient>
+                    {
+                        new BaseDishIngredient { BaseDishId = 1, IngredientId = 2, Ingredient = ingredient2 }
+                    }
+                }
+            };
+
+            var filteredBaseDishes = _serviceProvider.GetService<BaseDishService>().FilterOutDishesWithInactiveIngredients(baseDishes);
+
+            Assert.AreEqual(1, filteredBaseDishes.Count);
         }
     }
 }
