@@ -97,7 +97,9 @@ namespace HaggesPizzeria.Controllers
                 var sessionOrder = HttpContext.Session.GetString(Constants.OrderSession);
                 var sessionCart = HttpContext.Session.GetString(Constants.CartSession);
 
-                if (sessionCart != null && sessionOrder != null)
+                if (sessionCart != null
+                    && sessionOrder != null
+                    && JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart).Count >= 1)
                 {
                     _orderService.SaveOrder(JsonConvert.DeserializeObject<Order>(sessionOrder));
                     _orderService.SaveOrderedDishes(JsonConvert.DeserializeObject<List<OrderedDish>>(sessionCart));
@@ -106,6 +108,7 @@ namespace HaggesPizzeria.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+                ModelState.AddModelError("Error", "Something went wrong, make sure you have items in your cart.");
 
                 return View("Payment");
             }

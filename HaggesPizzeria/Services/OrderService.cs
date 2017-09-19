@@ -80,7 +80,7 @@ namespace HaggesPizzeria.Services
                 var newOrderedDish = _context.OrderedDishes.OrderByDescending(od => od.OrderedDishId).FirstOrDefault();
                 newOrderedDish.Order = order;
 
-                _context.OrderedDishIngredients.AddRange(orderedDishes.Select(od => new OrderedDishIngredient { OrderedDishId = newOrderedDish.OrderedDishId, IngredientId = od.OrderedDishId }).ToList());
+                _context.OrderedDishIngredients.AddRange(orderedDish.Ingredients.Select(ingredient => new OrderedDishIngredient { OrderedDishId = newOrderedDish.OrderedDishId, IngredientId = ingredient }).ToList());
                 _context.SaveChanges();
             }
         }
