@@ -106,7 +106,7 @@ namespace HaggesPizzeria.Controllers
                     HttpContext.Session.Remove(Constants.CartSession);
                     HttpContext.Session.Remove(Constants.OrderSession);
 
-                    return RedirectToAction("Index", "Home");
+                    return View("PurchaseConfirmation");
                 }
                 ModelState.AddModelError("Error", "Something went wrong, make sure you have items in your cart.");
 

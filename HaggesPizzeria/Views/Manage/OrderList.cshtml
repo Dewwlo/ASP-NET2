@@ -1,0 +1,70 @@
+﻿@model ICollection<HaggesPizzeria.Models.Order>
+
+<h2>Your orders</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            Order date
+        </th>
+        <th>
+            Total price
+        </th>
+        <th>
+            Phone number
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Customer name
+        </th>
+        <th>
+            Order complete
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.OrderDate
+            </td>
+            <td>
+                @item.TotalPrice
+            </td>
+            <td>
+                @item.PhoneNumber
+            </td>
+            <td>
+                @item.Email
+            </td>
+            @if (item.User != null)
+            {
+                <td>
+                    @item.User.CustomerName
+                </td>
+            }
+            else
+            {
+                <td>
+                    No registered user
+                </td>
+            }
+            @if (item.IsComplete)
+            {
+                <td>
+                    Yes
+                </td>
+            }
+            else
+            {
+                <td>
+                    No
+                </td>
+            }
+        </tr>
+    }
+    </tbody>
+</table>

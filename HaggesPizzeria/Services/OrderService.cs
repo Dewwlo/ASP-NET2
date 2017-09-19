@@ -47,6 +47,16 @@ namespace HaggesPizzeria.Services
                 .ThenInclude(odi => odi.Ingredient).ToListAsync();
         }
 
+        public async Task<ICollection<Order>> GetAllUserOrders(string userId)
+        {
+            return await _context.Orders
+                .Where(o => o.User.Id == userId)
+                .Include(o => o.User)
+                .Include(o => o.OrderedDishes)
+                .ThenInclude(od => od.OrderedDishIngredients)
+                .ThenInclude(odi => odi.Ingredient).ToListAsync();
+        }
+
         public void SetOrderComplete(int orderId)
         {
             var order = _context.Orders.SingleOrDefault(o => o.OrderId == orderId);

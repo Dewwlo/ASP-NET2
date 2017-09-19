@@ -7,7 +7,14 @@ namespace HaggesPizzeria.Services
     {
         public bool ValidatePaymentInformation(Payment payment)
         {
-            return (payment.Year >= DateTime.Now.Year && payment.Month >= DateTime.Now.Month)
+            var verifyMonth = true;
+
+            if (DateTime.Now.Year == payment.Year)
+            {
+                verifyMonth = payment.Month >= DateTime.Now.Month;
+            }
+
+            return (payment.Year >= DateTime.Now.Year && verifyMonth)
                        && (payment.CardNumber.Length == 16)
                        && (payment.Cvc.Length == 3);
         }

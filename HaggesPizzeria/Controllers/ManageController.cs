@@ -23,6 +23,7 @@ namespace HaggesPizzeria.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly OrderService _orderService;
 
         private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
@@ -31,13 +32,15 @@ namespace HaggesPizzeria.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          OrderService orderService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _orderService = orderService;
         }
 
         [TempData]
@@ -480,6 +483,12 @@ namespace HaggesPizzeria.Controllers
             _logger.LogInformation("User with ID {UserId} has generated new 2FA recovery codes.", user.Id);
 
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> OrderList()
+        {
+            return View(await _orderService.GetAllUserOrders(_userManager.GetUserAsync(User).Result.Id));
         }
 
         #region Helpers
